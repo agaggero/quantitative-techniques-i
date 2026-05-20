@@ -4,7 +4,7 @@ Open monolingual-English undergraduate textbook for **Técnicas Cuantitativas I*
 
 ## Status
 
-🟢 **v0.9 — manuscript-complete (initial port).** All 7 chapters + 3 appendices ported from the original LaTeX lecture notes, Beamer slide decks, R Labs, LearnR interactive tutorials, and exercise sets into a single Quarto book. Locked editorial conventions (`\mathbb{E}`, `\operatorname{Var}`, `S^2` with divisor $n$, no custom macros) applied consistently per [`STYLE_GUIDE.md`](STYLE_GUIDE.md). Visual editor review and a first clean render pending.
+🟢 **v1.0 — published 2026-05-20.** Live at [https://agaggero.github.io/quantitative-techniques-i/](https://agaggero.github.io/quantitative-techniques-i/). Source: [agaggero/quantitative-techniques-i](https://github.com/agaggero/quantitative-techniques-i). All 7 chapters + 3 appendices ported from the original LaTeX lecture notes, Beamer slide decks, R Labs, LearnR interactive tutorials, and exercise sets into a single Quarto book. Locked editorial conventions (`\mathbb{E}`, `\operatorname{Var}`, `S^2` with divisor $n$, no custom macros) applied consistently per [`STYLE_GUIDE.md`](STYLE_GUIDE.md).
 
 ## Build
 

@@ -1,8 +1,13 @@
 # Next Steps — *Quantitative Techniques I* (TC1)
 
-**Date:** 2026-05-19
+**Date last updated:** 2026-05-20
 **For:** Prof. Alessio Gaggero (also for future-you)
-**Status:** v0.9 — manuscript-complete first port; all 7 chapters + 3 appendices in place; first clean render pending.
+**Status:** 🟢 **v1.0 — PUBLISHED 2026-05-20**. Book live on GitHub Pages; source repo public on GitHub.
+
+- Live URL: [https://agaggero.github.io/quantitative-techniques-i/](https://agaggero.github.io/quantitative-techniques-i/)
+- Source: [agaggero/quantitative-techniques-i](https://github.com/agaggero/quantitative-techniques-i)
+- License: CC BY 4.0
+- Edition: monolingual English at v1.0 (Spanish deferred to v1.x per D7)
 
 ---
 
@@ -15,8 +20,15 @@
 | Preface (`index.qmd`) | 1 | ✅ written |
 | Configuration | — | ✅ `en/_quarto.yml`, `references.bib`, `.gitignore`, `landing-page.html` |
 | Style guide | — | ✅ [`STYLE_GUIDE.md`](STYLE_GUIDE.md) — enforced conventions |
-| First render | — | 🟡 pending (next step) |
-| Visual editor pass | — | 🟡 pending (needs human eyes on rendered HTML) |
+| First render | — | ✅ EN HTML renders clean (12/12 files, no warnings) |
+| Audit storm | 5 | ✅ all 🟢 GREEN ([_audit/SYNTHESIS.md](_audit/SYNTHESIS.md)) |
+| Visual editor pass | — | ✅ 2026-05-20 |
+| GitHub Pages deployment | 1 | ✅ live |
+
+**Optional next steps (deferred):**
+- PDF render (MiKTeX iteration needed; LaTeX content in App.B and Ch.5 may overflow)
+- Zenodo DOI deposit
+- Cross-link from your personal Quarto website
 
 Total: ~270 KB of `.qmd` source across 11 chapter/appendix files, plus configuration. The originating LaTeX/Rmd source corpus stays at `../Lecture_Notes/`, `../Slides/`, and `../Practice/` as reference originals.
 
