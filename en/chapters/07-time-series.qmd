@@ -1,0 +1,682 @@
+---
+title: "Descriptive Analysis of Time Series"
+---
+
+> *Status: ported 2026-05-19. Reviewed by editor: pending.*
+
+## Learning outcomes {.unnumbered}
+
+By the end of this chapter the reader should be able to:
+
+- Define a time series and identify its four classical components (trend, seasonal, cyclical, irregular).
+- Distinguish additive from multiplicative decompositions and choose the appropriate model from a time plot.
+- Compute a centred moving average for quarterly (even-order) and odd-order seasonal data.
+- Fit a linear trend $\hat{T}_t = a + bt$ by OLS and interpret the slope as the per-period change.
+- Compute multiplicative seasonal variation indices (IVE) by the ratio-to-trend method and normalise them to sum to $s$.
+- Compute additive seasonal components and normalise them to sum to $0$.
+- Deseasonalise a series and produce short-horizon point forecasts.
+
+## Motivating empirical question {.unnumbered}
+
+> *Quarterly tourism in Málaga peaks every summer and grows year on year — how do we separate the underlying upward drift from the seasonal swing, and use the two pieces to forecast next year's quarters?*
+
+The chapter is built around quarterly business series — hotel stays, consumer complaints, ice-cream sales, electricity consumption — that exhibit both a smooth long-run movement (trend) and a repeating within-year pattern (seasonality). The running example in the R Lab is **quarterly ice-cream sales of a shop in Granada (2020 Q1 – 2023 Q4)** with summer peaks and winter troughs.
+
+## 7.1 Introduction
+
+A **time series** is a sequence of observations recorded at successive, equally spaced points in time. We denote the value at time $t$ by $Y_t$, so a series of length $n$ is written
+
+$$
+Y_1,\; Y_2,\; Y_3,\; \ldots,\; Y_n.
+$$
+
+Common examples are GDP (quarterly), unemployment (monthly), stock prices (daily), CO$_2$ concentration, hotel overnight stays, and the Consumer Price Index. The key working assumption is that *past patterns persist into the near future* — what makes forecasting possible, but also what fails when there is a structural break (a crisis, a pandemic, a policy reform).
+
+::: {.callout-note}
+## Definition: time series
+A time series of length $n$ is a sequence $Y_1, Y_2, \ldots, Y_n$ of observations of a single variable indexed by time. In this chapter $t$ runs over equally spaced periods (years, quarters, months) and we adopt a **univariate** point of view: no covariates, no inference, only the structure of $Y_t$ itself.
+:::
+
+The first step in any time-series analysis is always to **plot the data**. A time plot puts $t$ on the horizontal axis and $Y_t$ on the vertical axis, with consecutive points joined by line segments.
+
+## 7.2 The four components
+
+Classical decomposition splits $Y_t$ into four systematic pieces:
+
+::: {.callout-note}
+## Definition: components of a time series
+
+- **Trend $T_t$.** The long-run smooth direction of the series — upward, downward, or roughly constant.
+- **Seasonal component $S_t$.** A pattern that repeats at known, fixed intervals (typically $s = 4$ for quarterly data, $s = 12$ for monthly data).
+- **Cyclical component $C_t$.** Fluctuations that recur but *not* at fixed intervals (business cycles last anywhere from 2 to 10+ years).
+- **Irregular component $I_t$.** Residual variation: random shocks, measurement noise, one-off events.
+:::
+
+For the short and medium series typical of an introductory course (a few years of quarterly or monthly data), it is common practice to merge the cyclical movement into the trend, writing $T_t$ for the combined trend–cycle. The remaining decomposition then reads $Y_t \approx T_t + S_t + I_t$ or $Y_t \approx T_t \times S_t \times I_t$.
+
+### 7.2.1 Additive vs.\ multiplicative model
+
+The four components can be combined in two ways.
+
+**Additive model.**
+
+$$
+Y_t \;=\; T_t \;+\; S_t \;+\; C_t \;+\; I_t.
+$$
+
+Every component is in the units of $Y_t$. A seasonal value $S_t = +150$ means "150 extra units in this season".
+
+**Multiplicative model.**
+
+$$
+Y_t \;=\; T_t \;\times\; S_t \;\times\; C_t \;\times\; I_t.
+$$
+
+Only $T_t$ carries units; $S_t, C_t, I_t$ are dimensionless indices centred around $1$. A value $S_t = 1.30$ means "30 % above the trend level".
+
+::: {.callout-tip}
+## Choosing between additive and multiplicative
+Inspect the **amplitude of the seasonal swings** in the time plot:
+
+- *Roughly constant* amplitude as the level of the series changes $\Rightarrow$ **additive**.
+- *Amplitude grows (or shrinks) proportionally* with the level $\Rightarrow$ **multiplicative**.
+
+Most economic series exhibit the multiplicative pattern because percentage fluctuations tend to remain stable while absolute fluctuations grow with the level.
+:::
+
+## 7.3 Trend estimation
+
+Two complementary descriptive approaches: **moving averages** (nonparametric smoothing) and **ordinary least squares** (a parametric line in time).
+
+### 7.3.1 Trend by moving averages
+
+A moving average replaces each observation by the average of its neighbours, smoothing out short-run noise to reveal the long-run drift.
+
+::: {.callout-note}
+## Definition: centred moving average
+
+For data with $s$ seasons per year:
+
+- *Odd $s$* (e.g. $s = 3$): a centred $s$-period MA is $\text{MA}_t = \dfrac{1}{s}\sum_{i=-(s-1)/2}^{(s-1)/2} Y_{t+i}$.
+- *Even $s$* (e.g. $s = 4$): the raw $s$-period MA falls between two time points. We **centre** it by averaging two consecutive raw MAs, which is algebraically equivalent to
+:::
+
+$$
+\text{CMA}_t \;=\; \frac{1}{2s}\bigl(Y_{t-s/2} + 2Y_{t-s/2+1} + \cdots + 2Y_{t+s/2-1} + Y_{t+s/2}\bigr).
+$$
+
+Two important consequences:
+
+1. **Order $s$ kills seasonality.** A moving average of length equal to the number of seasons per year contains exactly one full seasonal cycle, so seasonal swings cancel and the MA tracks the trend.
+2. **End effects.** We lose $s/2$ observations at each end of the series — the MA is undefined where the window cannot be filled.
+
+::: {.callout-warning}
+## Common pitfall: forgetting to centre an even-order MA
+For quarterly data ($s = 4$), a simple 4-term MA sits between two quarters. If you label it at the second quarter of the window you bias the trend half a step forward. Always centre by averaging two consecutive 4-term MAs.
+:::
+
+### 7.3.2 Trend by OLS
+
+The simplest parametric trend is a straight line in time,
+
+$$
+\hat{T}_t \;=\; a + b\,t, \qquad t = 1, 2, \ldots, n.
+$$
+
+The parameters $a$ and $b$ are estimated by ordinary least squares — the same machinery as in [Chapter 2](02-bivariate.qmd), with the explanatory variable being the integer time index $t$. The closed-form estimators are
+
+$$
+b \;=\; \frac{n\sum t\,Y_t - \bigl(\sum t\bigr)\bigl(\sum Y_t\bigr)}{n\sum t^2 - \bigl(\sum t\bigr)^2},
+\qquad
+a \;=\; \bar{Y} - b\,\bar{t}.
+$$
+
+The slope $b$ is the average change in $Y_t$ per time period (per quarter for quarterly data, per month for monthly data). The **annual** trend increment is $b \times s$.
+
+::: {.callout-note}
+## Example: consumer complaints, OLS trend
+A consumer-protection office records quarterly complaints from 2013 Q1 to 2016 Q4 ($n = 16$). With $\sum t = 136$, $\sum Y_t = 1346$, $\sum t Y_t = 12{,}296$, $\sum t^2 = 1496$,
+:::
+
+$$
+b = \frac{16 \times 12296 - 136 \times 1346}{16 \times 1496 - 136^2} = \frac{13680}{5440} \approx 2.515,
+\qquad
+a = 84.125 - 2.515 \times 8.5 \approx 62.748.
+$$
+
+So $\hat{T}_t = 62.748 + 2.515\,t$. Complaints grow by about $2.515$ per quarter, or roughly $10$ per year. The annual increment $b\times s = 2.515\times 4 \approx 10.06$ confirms this.
+
+### 7.3.3 Moving averages vs.\ OLS — when to use which?
+
+| | Moving averages | OLS trend |
+|---|---|---|
+| Assumptions | None (nonparametric) | Linear (or specified) form |
+| Follows local changes | Yes | No (global fit) |
+| Loses endpoints | Yes ($s/2$ each side) | No |
+| Forecasting | Not directly | Yes (extrapolate the line) |
+| Best for | Exploratory analysis | Forecasting |
+
+Moving averages are the natural first descriptive look; OLS is the natural choice when a linear drift is plausible and we want to extrapolate.
+
+## 7.4 Seasonal variation indices (IVE)
+
+Once the trend is estimated, we quantify the seasonal pattern. The **Seasonal Variation Indices** (IVE, from the Spanish *Índices de Variación Estacional*) measure how each season typically deviates from the trend.
+
+::: {.callout-note}
+## Definition: multiplicative IVE
+In the multiplicative model, $\text{IVE}_j$ is dimensionless. $\text{IVE}_j = 1.30$ means season $j$ is typically $30\%$ above trend; $\text{IVE}_j = 0.75$ means $25\%$ below trend. By construction
+:::
+
+$$
+\sum_{j=1}^{s}\text{IVE}_j \;=\; s.
+$$
+
+::: {.callout-note}
+## Definition: additive seasonal component
+In the additive model, $E_j$ is measured in the same units as $Y_t$. $E_j = +15$ means season $j$ is typically $15$ units above trend; $E_j = -20$ means $20$ units below. The constraint is
+:::
+
+$$
+\sum_{j=1}^{s} E_j \;=\; 0.
+$$
+
+### 7.4.1 The ratio-to-trend method (multiplicative)
+
+The standard method for the multiplicative IVE proceeds in four steps:
+
+1. **Estimate the trend** $\hat{T}_t = a + bt$ and compute $\hat{T}_t$ for every period.
+2. **Compute the ratios** $Y_t/\hat{T}_t$. In the multiplicative model these isolate the combined seasonal-and-irregular factor: $Y_t/\hat{T}_t \approx S_t \cdot I_t$.
+3. **Average the ratios by season.** For each $j = 1, \ldots, s$, take the arithmetic mean of all ratios from season $j$. Averaging across years washes out the irregular noise:
+   $$
+   \bar{R}_j \;=\; \frac{1}{k}\sum_{\text{years}} \frac{Y_t}{\hat{T}_t}, \quad t \text{ in season } j.
+   $$
+4. **Normalise** so that the indices sum to $s$. Define $c = s / \sum_j \bar{R}_j$ and set $\text{IVE}_j = c\,\bar{R}_j$.
+
+For the additive model, replace ratios by residuals $Y_t - \hat{T}_t$, average by season, and normalise so the mean is $0$ (subtract the overall mean of the seasonal means from each one).
+
+::: {.callout-note}
+## Example: consumer complaints, full IVE
+Using $\hat{T}_t = 62.748 + 2.515\,t$, the per-quarter ratios $Y_t/\hat{T}_t$ averaged over the four years are
+:::
+
+| | Q1 | Q2 | Q3 | Q4 |
+|---|---|---|---|---|
+| $\bar{R}_j$ | 0.9210 | 1.2363 | 0.7621 | 1.0803 |
+| Sum | | | | 3.9997 |
+
+The sum is essentially $4$, so $c \approx 1$ and the adjusted indices are
+
+| | Q1 | Q2 | Q3 | Q4 |
+|---|---|---|---|---|
+| IVE | 0.9211 | 1.2364 | 0.7622 | 1.0804 |
+| IVE % | 92.1% | 123.6% | 76.2% | 108.0% |
+
+Q2 is 23.6% above trend (spring activity), Q3 23.8% below (holiday calm), Q1 7.9% below, Q4 8.0% above.
+
+## 7.5 Deseasonalisation
+
+Raw data can mislead when seasons differ widely — toy sales in March are naturally lower than in December, but does that mean the industry is in trouble? We remove the seasonal effect to see the underlying level.
+
+::: {.callout-note}
+## Definition: deseasonalised series
+
+- **Multiplicative model:** $Y^*_t = Y_t / \text{IVE}_j$, where $j$ is the season of period $t$.
+- **Additive model:** $Y^*_t = Y_t - E_j$.
+
+The deseasonalised series $Y^*_t$ is what the value *would have been* in the absence of a seasonal effect — comparable across seasons and easier to read for the trend.
+:::
+
+A toy-store example clarifies the intuition. If sales are €400,000 in March (IVE 0.60) and €1,200,000 in December (IVE 1.80), then
+$$
+Y^*_{\text{Mar}} = \frac{400\,000}{0.60} = 666{,}667 = \frac{1\,200\,000}{1.80} = Y^*_{\text{Dec}}.
+$$
+After removing the seasonal effect both months show the same underlying level — the apparent gulf was entirely seasonal.
+
+## 7.6 Forecasting
+
+With trend and seasonal indices in hand, forecasting reduces to extending the trend and reapplying the seasonal factor.
+
+::: {.callout-note}
+## Definition: forecast for period $t > n$
+
+- **Multiplicative:** $\hat{Y}_t = \hat{T}_t \times \text{IVE}_j$.
+- **Additive:** $\hat{Y}_t = \hat{T}_t + E_j$.
+
+We evaluate the OLS trend line at the future $t$ and multiply (or add) the appropriate seasonal index. The two operations together give a **point forecast**.
+:::
+
+Continuing the complaints example, the data end at $t = 16$. For 2017 Q1 ($t = 17$) and 2017 Q2 ($t = 18$):
+
+$$
+\hat{T}_{17} = 62.748 + 2.515(17) \approx 105.50,
+\qquad
+\hat{Y}_{17} = 105.50 \times 0.9211 \approx 97.18.
+$$
+
+$$
+\hat{T}_{18} = 62.748 + 2.515(18) \approx 108.02,
+\qquad
+\hat{Y}_{18} = 108.02 \times 1.2364 \approx 133.56.
+$$
+
+We predict about $97$ complaints in Q1 2017 (a quiet quarter) and about $134$ in Q2 2017 (a busy one). Since seasonal indices used in deflation can also appear in **index-number** form (see [Chapter 6](06-index-numbers.qmd)), the close ties between the two topics are worth keeping in mind.
+
+::: {.callout-warning}
+## Caveats on descriptive forecasts
+The descriptive forecast $\hat{Y}_t = \hat{T}_t \times \text{IVE}_j$ is an **extrapolation**: it answers "what if the past pattern continues?", not "what would happen under a different policy?" Three caveats:
+
+1. **Short horizons only.** Linear extrapolation a couple of periods ahead is reasonable; several years ahead is risky.
+2. **Structural breaks.** Crises, pandemics, regulatory changes can break the trend or the seasonal pattern entirely.
+3. **No causal claim.** A descriptive forecast is not a causal counterfactual — that machinery is the subject of TC2 and Econometrics I.
+:::
+
+## 7.7 R Lab — Granada ice-cream sales
+
+A worked descriptive analysis of quarterly ice-cream sales for a Granada shop (2020 Q1 – 2023 Q4): trend by moving averages and OLS, multiplicative IVE, deseasonalisation, and point forecasts for 2024.
+
+```{r ch07-setup}
+#| message: false
+#| warning: false
+set.seed(2026)
+```
+
+### 7.7.1 The data
+
+We simulate sales (in thousands of euros) as the sum of a linear trend, a four-quarter seasonal pattern (Q3 is the summer peak), and small noise.
+
+```{r ch07-create-data}
+quarters <- paste0(rep(2020:2023, each = 4), " Q", 1:4)
+trend    <- seq(20, 35, length.out = 16)
+seasonal <- c(-6, 4, 12, -4)            # repeats each year
+noise    <- round(rnorm(16, 0, 0.8), 1)
+sales    <- round(trend + rep(seasonal, 4) + noise, 1)
+
+ts_data <- data.frame(Period = quarters, t = 1:16, Sales = sales)
+ts_data
+```
+
+### 7.7.2 Plotting the series
+
+```{r ch07-plot-series}
+plot(1:16, sales, type = "o", pch = 16, col = "steelblue", lwd = 2,
+     xaxt = "n", xlab = "Quarter", ylab = "Sales (000 EUR)",
+     main = "Ice-cream sales in Granada, 2020-2023")
+axis(1, at = 1:16, labels = quarters, las = 2, cex.axis = 0.7)
+grid(nx = NA, ny = NULL, col = "grey85")
+```
+
+The plot shows an upward drift and a clear four-quarter cycle peaking every Q3.
+
+### 7.7.3 Centred MA(4)
+
+For quarterly data we use a **4-term moving average**, centred because $s = 4$ is even.
+
+```{r ch07-moving-average}
+ma4_raw <- stats::filter(sales, rep(1/4, 4), sides = 2)
+ma4     <- stats::filter(ma4_raw, c(1/2, 1/2), sides = 1)
+
+ts_data$MA4 <- round(as.numeric(ma4), 2)
+ts_data[, c("Period", "Sales", "MA4")]
+```
+
+`NA` at the two ends is expected — the centred MA needs $s/2 = 2$ neighbours on each side.
+
+```{r ch07-ma-plot}
+plot(1:16, sales, type = "o", pch = 16, col = "steelblue", lwd = 2,
+     xaxt = "n", xlab = "Quarter", ylab = "Sales (000 EUR)",
+     main = "Sales with centred MA(4)")
+lines(1:16, ma4, col = "tomato", lwd = 2, lty = 2)
+axis(1, at = 1:16, labels = quarters, las = 2, cex.axis = 0.7)
+legend("topleft", legend = c("Original", "MA(4)"),
+       col = c("steelblue", "tomato"), lwd = 2, lty = c(1, 2), bty = "n")
+```
+
+The MA strips the seasonal zigzag away, leaving a smooth upward path.
+
+### 7.7.4 OLS trend line
+
+```{r ch07-ols-trend}
+model <- lm(Sales ~ t, data = ts_data)
+coef(model)
+
+ts_data$Trend <- round(fitted(model), 2)
+```
+
+The slope is the average per-quarter change in sales; multiplying by $4$ gives the annual growth.
+
+```{r ch07-trend-plot}
+plot(1:16, sales, type = "o", pch = 16, col = "steelblue", lwd = 2,
+     xaxt = "n", xlab = "Quarter", ylab = "Sales (000 EUR)",
+     main = "Sales with OLS trend line")
+abline(model, col = "darkgreen", lwd = 2)
+axis(1, at = 1:16, labels = quarters, las = 2, cex.axis = 0.7)
+legend("topleft", legend = c("Original", "OLS trend"),
+       col = c("steelblue", "darkgreen"), lwd = 2, bty = "n")
+```
+
+### 7.7.5 Multiplicative seasonal indices (IVE)
+
+We follow the ratio-to-trend method. Step 1: ratios $Y_t / \hat{T}_t$.
+
+```{r ch07-ratio-to-trend}
+ts_data$Ratio <- round(sales / ts_data$Trend, 4)
+ts_data[, c("Period", "Sales", "Trend", "Ratio")]
+```
+
+Step 2: average ratios per quarter, then normalise so they sum to 4.
+
+```{r ch07-ive}
+quarter_num <- rep(1:4, 4)
+raw_ive     <- tapply(ts_data$Ratio, quarter_num, mean)
+ive         <- raw_ive * (4 / sum(raw_ive))
+names(ive)  <- paste0("Q", 1:4)
+round(ive, 4)
+cat("Sum of IVE:", round(sum(ive), 4), "\n")
+```
+
+```{r ch07-ive-bar}
+barplot(ive, col = c("lightblue", "khaki", "tomato", "lightgreen"),
+        border = "white", ylim = c(0, 1.6),
+        main = "Seasonal indices (IVE)", ylab = "Index")
+abline(h = 1, lty = 2, col = "grey50")
+```
+
+Q3 (summer) is the clear peak; Q1 (winter) the deepest trough.
+
+### 7.7.6 Deseasonalisation
+
+```{r ch07-deseas}
+ts_data$IVE    <- rep(round(ive, 4), 4)
+ts_data$Deseas <- round(sales / rep(ive, 4), 2)
+ts_data[, c("Period", "Sales", "IVE", "Deseas")]
+```
+
+```{r ch07-deseas-plot}
+plot(1:16, sales, type = "o", pch = 16, col = "steelblue", lwd = 2,
+     xaxt = "n", xlab = "Quarter", ylab = "Sales (000 EUR)",
+     main = "Original vs deseasonalised sales")
+lines(1:16, ts_data$Deseas, type = "o", pch = 17, col = "darkorange", lwd = 2)
+axis(1, at = 1:16, labels = quarters, las = 2, cex.axis = 0.7)
+legend("topleft", legend = c("Original", "Deseasonalised"),
+       col = c("steelblue", "darkorange"), pch = c(16, 17), lwd = 2, bty = "n")
+```
+
+The deseasonalised series tracks the trend closely — the original spikes were almost entirely seasonal.
+
+### 7.7.7 Forecasting 2024
+
+To forecast 2024 Q1–Q4 (periods $t = 17, \ldots, 20$) we extrapolate the OLS trend and reapply the seasonal indices.
+
+```{r ch07-forecast}
+t_new      <- 17:20
+trend_new  <- coef(model)[1] + coef(model)[2] * t_new
+forecast   <- round(trend_new * ive, 2)
+fc_labels  <- paste0("2024 Q", 1:4)
+
+fc_table <- data.frame(Period = fc_labels, t = t_new,
+                       Trend = round(trend_new, 2),
+                       IVE = round(ive, 4), Forecast = forecast)
+fc_table
+```
+
+```{r ch07-forecast-plot}
+all_sales  <- c(sales, forecast)
+all_labels <- c(quarters, fc_labels)
+
+plot(1:20, all_sales, type = "n", xaxt = "n",
+     xlab = "Quarter", ylab = "Sales (000 EUR)",
+     main = "Historical sales and 2024 forecast")
+lines(1:16, sales, type = "o", pch = 16, col = "steelblue", lwd = 2)
+lines(16:20, c(sales[16], forecast), type = "o", pch = 17,
+      col = "tomato", lwd = 2, lty = 2)
+axis(1, at = 1:20, labels = all_labels, las = 2, cex.axis = 0.65)
+abline(v = 16.5, lty = 3, col = "grey50")
+legend("topleft", legend = c("Historical", "Forecast"),
+       col = c("steelblue", "tomato"), pch = c(16, 17),
+       lty = c(1, 2), lwd = 2, bty = "n")
+```
+
+### 7.7.8 Additive seasonal components (for contrast)
+
+Same data, additive treatment. Residuals $Y_t - \hat{T}_t$, averaged by quarter and centred to sum to $0$:
+
+```{r ch07-additive}
+add_residual <- sales - ts_data$Trend
+add_raw      <- tapply(add_residual, quarter_num, mean)
+add_ive      <- add_raw - mean(add_raw)
+names(add_ive) <- paste0("Q", 1:4)
+round(add_ive, 2)
+cat("Sum:", round(sum(add_ive), 4), "\n")
+```
+
+The additive components sum to (essentially) zero. For this series the multiplicative model is preferable because the seasonal amplitude in fact grows mildly with the level, but the two parameterisations track each other closely.
+
+## Self-check {.unnumbered}
+
+::: {.callout-tip collapse="true"}
+## Q1. Components of a time series
+
+In the classical decomposition, the **trend** component captures:
+
+- A. Random shocks that average to zero.
+- B. The long-run, smooth movement of the series.
+- C. Repeating quarterly fluctuations of constant amplitude.
+- D. The level effect of fixed quarterly indices.
+
+**Answer: B.** The trend is the smooth, long-run direction. Random shocks are the irregular component; the repeating quarterly pattern is the seasonal component.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q2. Centring an even-order MA
+
+Why is a 4-term moving average of quarterly data **centred** by averaging two consecutive MA values?
+
+- A. Because the moving average is biased and the second pass corrects the bias.
+- B. Because R's `filter()` requires it for any quarterly data.
+- C. Because the order is even (4), so the raw MA falls between two periods; centring aligns it with an integer time point.
+- D. To remove the trend before estimating seasonality.
+
+**Answer: C.** A raw 4-period MA averages four consecutive observations and is naturally located between the second and third of them. Averaging two consecutive raw MAs re-anchors the smoothed value at an actual integer time.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q3. Why use MA of order $s$?
+
+A moving average of length equal to the seasonal period $s$ is useful because:
+
+- A. It amplifies the seasonal cycle.
+- B. The $s$ values within one full cycle average out the seasonal swing, leaving an estimate of the trend.
+- C. It converts the additive model into the multiplicative one.
+- D. It eliminates the irregular component but keeps the seasonal one.
+
+**Answer: B.** A window of length $s$ contains exactly one full seasonal cycle, so the seasonal swings cancel and the remaining smoothed value is an estimate of the trend.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q4. Interpreting the OLS slope
+
+In the OLS trend $\hat{T}_t = \hat{a} + \hat{b}\,t$ with $t = 1, 2, \ldots, 16$, the slope $\hat{b}$ is:
+
+- A. The average value of the series.
+- B. The expected change in $Y_t$ per **one-quarter** increase in time.
+- C. The yearly growth rate of the series.
+- D. The seasonal index for Q1.
+
+**Answer: B.** $\hat{b}$ is the per-period change. For an annual increment multiply by $s$.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q5. Reading a multiplicative IVE
+
+In the multiplicative model, the IVE for Q3 equals **1.35**. The correct interpretation is:
+
+- A. Q3 sales are 35% above the trend value of that quarter, on average.
+- B. Q3 sales are 1.35 thousand EUR above trend.
+- C. Q3 sales are 1.35% above trend.
+- D. Q3 sales are 35% of the trend value.
+
+**Answer: A.** Multiplicative IVEs are dimensionless ratios; 1.35 means 35% above the trend at that point in time.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q6. Why normalise IVE to sum to $s$?
+
+After computing raw seasonal ratios for quarterly data, why do we normalise so that the four indices sum to 4?
+
+- A. To convert them from multiplicative into additive form.
+- B. So that the seasonal effects cancel out *over the year* — indices above 1 are offset by indices below 1.
+- C. Because R's `tapply()` requires a fixed sum.
+- D. To make the highest index equal to 1.
+
+**Answer: B.** The constraint $\sum_j \text{IVE}_j = s$ guarantees that the seasonal factor averages to 1 across the year, so over a full cycle the seasonal effect is neutral and the trend carries the long-run movement.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q7. Additive constraint
+
+In the additive decomposition, the seasonal components should:
+
+- A. Sum to 1.
+- B. Sum to **0** across the seasonal cycle (each season's deviation cancels out over the year).
+- C. Sum to 4 (one per quarter).
+- D. Sum to 100 (since they are percentages).
+
+**Answer: B.** Additive components are absolute deviations from the trend; for them to average to zero over a full cycle they must sum to zero across the $s$ seasons.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q8. Deseasonalisation in the multiplicative model
+
+Deseasonalising $Y_t$ in the multiplicative model is done by:
+
+- A. Multiplying $Y_t$ by the seasonal index of its quarter.
+- B. Dividing $Y_t$ by the seasonal index of its quarter, $Y_t / \text{IVE}_j$.
+- C. Subtracting the seasonal index of its quarter.
+- D. Subtracting the trend value of its period.
+
+**Answer: B.** In the multiplicative model the seasonal factor *multiplies* the underlying level, so we divide it out. Subtraction is the additive-model operation.
+:::
+
+## Exercises {.unnumbered}
+
+### Exercise 7.1 ★ — Identifying components
+
+A retail company records monthly sales over several years. The data show: (i) a general upward movement over the years; (ii) sales peaks every December and troughs every February; (iii) an unusually large spike in March 2020 (pandemic stockpiling); (iv) small random fluctuations from month to month.
+
+(a) Identify which component (trend, seasonal, cyclical, irregular) each item corresponds to.
+(b) Write the multiplicative decomposition model.
+(c) Write the additive decomposition model.
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+(a) The upward movement is **trend**; the December/February pattern is **seasonal**; the March 2020 spike and the small monthly fluctuations are both **irregular** (one is a one-off shock, the other is noise). Cyclical movement is not identifiable here (it would require multi-year oscillations).
+
+(b) Multiplicative: $Y_t = T_t \times S_t \times I_t$.
+
+(c) Additive: $Y_t = T_t + S_t + I_t$.
+
+In both we have absorbed the cyclical component into $T_t$, as is standard for short series.
+:::
+
+### Exercise 7.2 ★ — Additive or multiplicative?
+
+**Series A:** Annual ice-cream sales (thousands of €). Seasonal fluctuations have roughly the same amplitude each year (±5,000 €), regardless of whether total sales are 50,000 or 100,000. **Series B:** Quarterly airline passengers (millions). In years with 10 million passengers, summer peaks add about 2 million; in years with 20 million, summer peaks add about 4 million.
+
+(a) For each series, state whether the additive or multiplicative model is more appropriate and explain why.
+(b) What visual feature in the time plot helps you choose?
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+(a) **Series A:** additive — seasonal swings are constant in absolute terms (±5,000 €), independent of the level. **Series B:** multiplicative — seasonal swings are proportional to the level (about 20% of the annual total each year), so the absolute amplitude grows with the trend.
+
+(b) Look at the **amplitude of the seasonal oscillations over time** in the plot: roughly constant ⇒ additive; growing (fan-shaped) ⇒ multiplicative.
+:::
+
+### Exercise 7.3 ★ — OLS trend from annual data
+
+The annual sales (millions of €) of a company are:
+
+| Year | 2019 | 2020 | 2021 | 2022 | 2023 |
+|------|------|------|------|------|------|
+| $y_t$ | 12 | 15 | 17 | 20 | 21 |
+
+(a) Code time as $t = 1, 2, 3, 4, 5$.
+(b) Estimate the linear trend $\hat{y}_t = a + bt$ by OLS.
+(c) Interpret the slope.
+(d) Predict sales for 2024 ($t = 6$).
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+(a) $t = 1$ for 2019, …, $t = 5$ for 2023.
+
+(b) With $\sum t = 15$, $\sum y = 85$, $\sum ty = 278$, $\sum t^2 = 55$,
+
+$$
+b = \frac{5(278) - 15(85)}{5(55) - 15^2} = \frac{115}{50} = 2.30,\qquad a = 17 - 2.30 \times 3 = 10.10.
+$$
+
+So $\hat{y}_t = 10.10 + 2.30\,t$.
+
+(c) Sales grow by about €2.3 million per year on average.
+
+(d) $\hat{y}_6 = 10.10 + 2.30 \times 6 = 23.90$ million €.
+:::
+
+### Exercise 7.4 ★★ — Centred MA(4) and IVE
+
+The quarterly production (thousands of units) of a factory for 2021–2023 is
+
+| Year | Q1 | Q2 | Q3 | Q4 |
+|------|----|----|----|----|
+| 2021 | 40 | 52 | 48 | 36 |
+| 2022 | 44 | 58 | 54 | 40 |
+| 2023 | 50 | 64 | 60 | 46 |
+
+(a) Compute the non-centred 4-term moving averages $\text{MA}(4)$.
+(b) Centre them to obtain $\text{CMA}(4)$ and tabulate against the original data.
+(c) Compute the multiplicative IVE by the ratio-to-trend method (ratios in percentage form, normalised so the four indices sum to 400).
+
+### Exercise 7.5 ★★ — Deseasonalise and forecast
+
+Using the data and IVEs of Exercise 7.4, and the OLS trend $\hat{T}_t = 40.5 + 1.2\,t$ ($t = 1, \ldots, 12$):
+
+(a) Deseasonalise the original series.
+(b) Forecast each quarter of 2024.
+(c) In which quarter is production expected to be highest?
+
+### Exercise 7.6 ★★ — Full multiplicative decomposition
+
+A tourism company records bookings (in hundreds) per quarter for 2021–2023:
+
+| Year | Q1 | Q2 | Q3 | Q4 |
+|------|----|----|----|----|
+| 2021 | 20 | 35 | 50 | 25 |
+| 2022 | 24 | 40 | 56 | 28 |
+| 2023 | 28 | 46 | 62 | 32 |
+
+Perform a full multiplicative decomposition: (a) CMA(4); (b) IVE; (c) OLS trend on the deseasonalised series; (d) forecasts for the four quarters of 2024.
+
+### Exercise 7.7 ★★ — Full additive decomposition
+
+Quarterly electricity consumption (MWh):
+
+| Year | Q1 | Q2 | Q3 | Q4 |
+|------|----|----|----|----|
+| 2021 | 110 | 80 | 90 | 120 |
+| 2022 | 115 | 85 | 95 | 125 |
+| 2023 | 120 | 90 | 100 | 130 |
+
+Use the additive model. (a) Compute CMA(4); (b) additive seasonal components $S_q$ (normalise so $\sum S_q = 0$); (c) OLS trend on $y_t^d = y_t - S_q$; (d) forecast each quarter of 2024.
+
+### Exercise 7.8 ★★★ — Interpretation and forecasting
+
+For a quarterly series with $n = 20$, an analyst reports $\hat{T}_t = 150 + 5t$ and $\text{IVE}_{Q1} = 0.85$, $\text{IVE}_{Q2} = 0.95$, $\text{IVE}_{Q3} = 0.80$, $\text{IVE}_{Q4} = 1.40$.
+
+(a) Verify the multiplicative constraint on the IVE.
+(b) Interpret each IVE in plain language.
+(c) Forecast each quarter of 2024 ($t = 21, \ldots, 24$).
+(d) Q4 2023 actual sales ($t = 20$) were 265 thousand. Compute the deseasonalised value and comment.
+(e) What would the Q4 2024 forecast be under an additive model with $E_{Q4} = +60$ (thousand units)?

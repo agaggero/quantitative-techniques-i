@@ -1,0 +1,59 @@
+---
+title: "Preface"
+---
+
+# Preface {.unnumbered}
+
+> *Quantitative Techniques I — Descriptive Statistics, Probability, and Index Numbers* is the open companion textbook for the **Técnicas Cuantitativas I** course at the University of Granada (UGR), Faculty of Economics and Business Studies. It consolidates lecture notes, R labs, and interactive self-assessments — developed across multiple cohorts — into a single reproducible volume.
+
+## What this book is
+
+A unified first-year undergraduate text that walks the reader from raw observations to a working command of classical descriptive statistics, probability, the most common discrete distributions, index numbers, and descriptive time-series analysis. The course deliberately precedes inferential statistics and econometrics: there are no hypothesis tests, no confidence intervals, and no sampling-distribution machinery here. Those tools belong to the second-semester sequel and to Econometrics I.
+
+Each chapter follows the same six-section template:
+
+1. **Learning outcomes**
+2. **Motivating empirical question**
+3. **Theory**
+4. **R Lab** — worked example in R
+5. **Self-check** — interactive multiple-choice quiz
+6. **Exercises** (★ easy, ★★ medium, ★★★ analytical)
+
+## How this book is organised
+
+| Chapter | Topic |
+|---|---|
+| 1 | Univariate Descriptive Statistics |
+| 2 | Bivariate Descriptive Statistics |
+| 3 | Introduction to Probability |
+| 4 | Random Variables |
+| 5 | Discrete Probability Distributions |
+| 6 | Index Numbers |
+| 7 | Time Series (descriptive) |
+| App. A | Mathematical and Combinatorial Prerequisites |
+| App. B | Statistical Reference Tables |
+| App. C | Formula Sheet and Exam Preparation |
+
+## Editions and license
+
+This book is released under a **Creative Commons Attribution 4.0 International (CC BY 4.0)** license. It is monolingual English at v1.0. A Spanish edition may follow in a future release; the project scaffolding is structured to make that addition straightforward.
+
+## How to use the source materials
+
+The textbook is built with [Quarto](https://quarto.org). Each chapter is a `.qmd` file that combines prose, executable R code, and self-assessment callouts. To rebuild the book locally from the `en/` directory:
+
+```bash
+quarto render
+```
+
+## Required R packages
+
+```r
+install.packages(c("knitr", "rmarkdown", "readxl", "dplyr", "ggplot2", "learnr"))
+```
+
+No external dataset package is required — all examples either simulate data inline (with `set.seed(2026)`) or read small files included with the project.
+
+## Acknowledgements
+
+UGR Department of Methods of Quantitative Analysis for Economics and Business; the students of multiple cohorts whose questions shaped this text; and the authors of *Statistics for Business and Economics* (Newbold, Carlson, and Thorne) and *Análisis de datos multivariantes* (Daniel Peña) on whose pedagogical traditions this book builds.

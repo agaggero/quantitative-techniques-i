@@ -1,0 +1,79 @@
+project:
+  type: book
+  output-dir: _output
+
+book:
+  title: "Quantitative Techniques I"
+  subtitle: "Descriptive Statistics, Probability, and Index Numbers"
+  author: "Alessio Gaggero"
+  date: today
+  language: en
+  description: |
+    An open undergraduate textbook for Quantitative Techniques I
+    (Técnicas Cuantitativas I) at the University of Granada.
+    Consolidates lecture notes, R labs, and interactive
+    self-assessments into a single reproducible volume covering
+    descriptive statistics, probability, random variables, discrete
+    distributions, index numbers, and descriptive time-series
+    analysis.
+
+  chapters:
+    - index.qmd
+    - chapters/01-univariate.qmd
+    - chapters/02-bivariate.qmd
+    - chapters/03-probability.qmd
+    - chapters/04-random-variables.qmd
+    - chapters/05-distributions.qmd
+    - chapters/06-index-numbers.qmd
+    - chapters/07-time-series.qmd
+
+  appendices:
+    - chapters/appendix-a-prerequisites.qmd
+    - chapters/appendix-b-tables.qmd
+    - chapters/appendix-c-formula-sheet.qmd
+
+format:
+  html:
+    theme:
+      light: cosmo
+      dark: darkly
+    number-sections: true
+    toc: true
+    toc-depth: 3
+    code-fold: show
+    code-tools: true
+    mathjax: true
+    fig-align: center
+
+  pdf:
+    documentclass: scrbook
+    papersize: a4
+    geometry:
+      - margin=2.5cm
+    number-sections: true
+    toc: true
+    toc-depth: 2
+    fig-align: center
+    keep-tex: true
+    include-in-header:
+      text: |
+        \usepackage{booktabs}
+        \usepackage{amsmath,amssymb,amsthm,mathtools}
+        \usepackage{bm}
+
+bibliography: ../references.bib
+
+license: "CC BY 4.0"
+
+execute:
+  echo: true
+  warning: false
+  message: false
+  freeze: auto
+
+knitr:
+  opts_chunk:
+    fig.width: 7
+    fig.height: 5
+    fig.align: center
+    comment: ""

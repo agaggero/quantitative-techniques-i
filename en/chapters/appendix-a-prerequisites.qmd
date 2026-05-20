@@ -1,0 +1,177 @@
+---
+title: "Mathematical Prerequisites"
+---
+
+> *Status: ported 2026-05-19. Reviewed by editor: pending.*
+
+This appendix is a quick-reference compendium of the mathematical machinery the book takes for granted. It is deliberately terse: each subsection states the notation and the handful of identities used elsewhere in the text, with no extended derivations. Skim it once at the start of the course and return to individual subsections as they are invoked by Chapters 1--7.
+
+## A.1 Summation notation
+
+The summation symbol compresses a finite addition into one expression:
+
+$$
+\sum_{i=1}^{n} x_i = x_1 + x_2 + \cdots + x_n.
+$$
+
+The index $i$ is a bound (dummy) variable; renaming it does not change the value. The two identities used most often in this book are **linearity**
+
+$$
+\sum_{i=1}^{n} (a x_i + b) = a \sum_{i=1}^{n} x_i + n b,
+$$
+
+and the constant-summation rule $\sum_{i=1}^{n} c = n c$. Two centred-sum facts that recur in the variance algebra of Chapter 1 are $\sum_{i=1}^{n} (x_i - \bar{x}) = 0$ and the computational identity $\sum_{i=1}^{n} (x_i - \bar{x})^{2} = \sum_{i=1}^{n} x_i^{2} - n \bar{x}^{2}$.
+
+::: {.callout-warning}
+## Common mistake: $\sum_i x_i^2 \ne \left(\sum_i x_i\right)^2$
+
+The sum of the squares is **not** the square of the sum. This is the single most frequent error in computing the sample variance $S^{2} = \frac{1}{n}\sum (x_i - \bar{x})^{2}$. For example, with $\{1, 2, 3\}$, $\sum x_i^{2} = 1 + 4 + 9 = 14$, but $\left(\sum x_i\right)^{2} = 6^{2} = 36$. The two quantities coincide only when the sample has a single observation.
+:::
+
+## A.2 Product notation
+
+The product symbol is the multiplicative analogue of $\sum$:
+
+$$
+\prod_{i=1}^{n} x_i = x_1 \cdot x_2 \cdots x_n.
+$$
+
+The most important special case in this book is the **factorial**,
+
+$$
+n! = \prod_{i=1}^{n} i = 1 \cdot 2 \cdot 3 \cdots n,
+$$
+
+with the convention $0! = 1$. Factorials appear in Chapter 3 (combinatorics) and Chapter 5 (Poisson and binomial PMFs). Useful recursive identity: $n! = n \cdot (n-1)!$.
+
+## A.3 Set theory basics
+
+A **set** is an unordered collection of distinct elements. We write $x \in A$ if $x$ is an element of $A$, and $A \subseteq \Omega$ if every element of $A$ also belongs to the universal set $\Omega$. The empty set is $\emptyset$. The four operations used throughout Chapter 3:
+
+- **Union** $A \cup B = \{x : x \in A \text{ or } x \in B\}$ ("$A$ or $B$").
+- **Intersection** $A \cap B = \{x : x \in A \text{ and } x \in B\}$ ("$A$ and $B$").
+- **Complement** $A^{c} = \Omega \setminus A = \{x \in \Omega : x \notin A\}$ ("not $A$").
+- **Difference** $A \setminus B = A \cap B^{c}$ ("$A$ but not $B$").
+
+Two sets are **disjoint** (or mutually exclusive) if $A \cap B = \emptyset$. The **cardinality** $|A|$ is the number of elements of $A$ when $A$ is finite.
+
+**De Morgan's laws** (used repeatedly in Chapter 3 to manipulate compound events):
+
+$$
+(A \cup B)^{c} = A^{c} \cap B^{c}, \qquad
+(A \cap B)^{c} = A^{c} \cup B^{c}.
+$$
+
+Both laws extend to any finite collection: the complement of a union is the intersection of complements, and vice versa.
+
+## A.4 Combinatorics
+
+Combinatorics counts arrangements and selections of $k$ items from a set of $n$. Three formulae are enough for Chapter 3 and the discrete distributions of Chapter 5.
+
+**Permutations** (ordered selections without repetition) of $k$ items from $n$:
+
+$$
+V_{n}^{k} = \frac{n!}{(n-k)!} = n (n-1) (n-2) \cdots (n-k+1).
+$$
+
+**Permutations with repetition** (ordered selections, each position chosen independently from $n$ alternatives):
+
+$$
+\widetilde{V}_{n}^{k} = n^{k}.
+$$
+
+**Combinations** (unordered selections without repetition) of $k$ items from $n$, also called the **binomial coefficient**:
+
+$$
+\binom{n}{k} = \frac{n!}{k!\,(n-k)!}, \qquad 0 \le k \le n.
+$$
+
+Reading: "$n$ choose $k$". By convention $\binom{n}{0} = \binom{n}{n} = 1$. The symmetry $\binom{n}{k} = \binom{n}{n-k}$ and **Pascal's identity**
+
+$$
+\binom{n}{k} = \binom{n-1}{k} + \binom{n-1}{k-1}
+$$
+
+are sometimes useful for hand calculation. The binomial coefficient is the numerical core of the binomial PMF $P(X = k) = \binom{n}{k} p^{k} (1-p)^{n-k}$ in Chapter 5.
+
+## A.5 Basic algebra and functions
+
+### Logarithm and exponential
+
+The natural logarithm $\ln(x)$ (base $e$) is the inverse of $e^{x}$: $\ln(e^{x}) = x$ and $e^{\ln x} = x$ for $x > 0$. The identities used in the book are
+
+$$
+\ln(xy) = \ln x + \ln y, \qquad
+\ln\!\left(\tfrac{x}{y}\right) = \ln x - \ln y, \qquad
+\ln(x^{a}) = a \ln x,
+$$
+
+with $\ln 1 = 0$, and for the exponential
+
+$$
+e^{a+b} = e^{a} e^{b}, \qquad e^{0} = 1.
+$$
+
+### Geometric series
+
+For $|r| < 1$ the infinite geometric series sums to
+
+$$
+\sum_{k=0}^{\infty} r^{k} = \frac{1}{1 - r},
+$$
+
+with the finite-sum companion $\sum_{k=0}^{n-1} r^{k} = (1 - r^{n})/(1 - r)$ for $r \ne 1$. These identities are used to derive the mean and variance of the geometric distribution in Chapter 5.
+
+### Quadratic formula
+
+The solutions of $a x^{2} + b x + c = 0$ (with $a \ne 0$) are
+
+$$
+x = \frac{-b \pm \sqrt{b^{2} - 4 a c}}{2 a}.
+$$
+
+We use it occasionally to invert moment expressions or to solve for parameters in Chapter 5 distribution exercises.
+
+## A.6 Quick R glossary
+
+::: {.callout-note}
+## R commands for the operations in this appendix
+
+| Mathematical object | R command |
+|---|---|
+| $\sum_{i} x_i$ | `sum(x)` |
+| $\prod_{i} x_i$ | `prod(x)` |
+| $\bar{x}$ | `mean(x)` |
+| $S^{2}$ (TC1 convention, divisor $n$) | `mean((x - mean(x))^2)` |
+| $S$ (TC1 convention) | `sqrt(mean((x - mean(x))^2))` |
+| Sample variance with divisor $n-1$ | `var(x)` |
+| Sample standard deviation with divisor $n-1$ | `sd(x)` |
+| $\binom{n}{k}$ | `choose(n, k)` |
+| $n!$ | `factorial(n)` |
+| $\ln x$ | `log(x)` |
+| $e^{x}$ | `exp(x)` |
+| $\sqrt{x}$ | `sqrt(x)` |
+
+Set operations on vectors: `union(A, B)`, `intersect(A, B)`, `setdiff(A, B)`, `is.element(x, A)`. Cardinality of a vector: `length(unique(A))`.
+:::
+
+::: {.callout-warning}
+## Critical: R's `var()` and `sd()` use divisor $n-1$, not $n$
+
+This book follows the Spanish business-statistics convention and defines the sample variance with divisor $n$:
+
+$$
+S^{2} = \frac{1}{n} \sum_{i=1}^{n} (x_i - \bar{x})^{2}.
+$$
+
+R's built-in `var(x)` and `sd(x)`, in contrast, divide by $n - 1$ (the unbiased estimator $\hat{\sigma}^{2}$ used in most English-language textbooks). The two definitions differ by a factor of $(n-1)/n$, which is negligible for $n \ge 30$ but **not** negligible in small-sample exercises and exam problems.
+
+To reproduce **this book's** $S^{2}$ in R, use either
+
+```r
+mean((x - mean(x))^2)             # direct definition
+var(x) * (length(x) - 1) / length(x)   # conversion from R's var()
+```
+
+Always check which convention an R output uses before comparing it with a hand calculation.
+:::

@@ -1,0 +1,720 @@
+---
+title: "Index Numbers"
+---
+
+> *Status: ported 2026-05-19. Reviewed by editor: pending.*
+
+## Learning outcomes {.unnumbered}
+
+By the end of this chapter the reader should be able to:
+
+- Distinguish absolute variation, rate of variation, and unit variation (growth) factor, and compute each for a time series.
+- Compute the **geometric-mean** average growth rate and explain why the arithmetic mean of rates is biased upward.
+- Construct an **elementary (simple) price index** and use the circular and inversion properties to re-anchor it.
+- Compute the **Laspeyres**, **Paasche**, and **Fisher** composite indices for a basket of goods, and interpret each as a weighted average of elementary indices.
+- Apply the **value index decomposition** $V = L_P \cdot P_Q / 100 = P_P \cdot L_Q / 100$ to attribute changes in total expenditure to price and quantity components.
+- **Link** two index series with different base years and **deflate** a nominal monetary series to express it in constant (base-year) euros.
+- Use sub-group weights to compute an aggregated CPI and the contribution of each sub-group to overall inflation.
+- Diagnose the **substitution-bias critique** of Laspeyres-type cost-of-living measures and articulate why descriptive index changes do not identify causal effects.
+
+## Motivating empirical question {.unnumbered}
+
+> *Is the average salary in Spain rising faster than prices — that is, are workers actually better off, or does a bigger paycheck just buy the same basket?*
+
+The Spanish *Salario Mínimo Interprofesional* (SMI) rose from EUR 736 per month in 2018 to EUR 1,134 in 2024, an apparent nominal increase of 54%. Over the same period the *Índice de Precios al Consumo* (IPC, the Spanish CPI) climbed from a level of 95.1 to 113.2, meaning the typical household basket became roughly 19% more expensive. To compare these magnitudes — and to answer the broader question of how purchasing power evolves — we need a coherent way to summarise the change of a single variable (a price, a wage, an output level) and, more ambitiously, the change of a *bundle* of variables (a consumer basket, a country's industrial output, a stock index). Index numbers are the descriptive statistic that makes this possible. The same machinery will reappear in [Chapter 7](07-time-series.qmd), where index series become the raw material for trend, cycle, and seasonal decomposition.
+
+## 6.1 Introduction: what is an index number?
+
+::: {.callout-note}
+## Definition: index number
+
+An **index number** is a statistical measure that expresses the relative change of a variable (or a group of variables) with respect to a **reference period**, called the **base period**. Index numbers are conventionally scaled so that the base period equals 100.
+:::
+
+Index numbers turn up everywhere a comparison across time or across countries is needed:
+
+- The **Consumer Price Index (CPI / IPC)** tracks the cost of a representative household basket. The Spanish IPC, published monthly by the INE, is the most widely cited inflation indicator.
+- The **GDP deflator** converts nominal GDP to real GDP, isolating the volume of production from price movements.
+- **Stock-market indices** such as the IBEX-35 (Spain), DAX (Germany), or S&P 500 (USA) summarise the price evolution of a basket of listed firms.
+- The **Human Development Index** combines health, education, and income into a single composite score, allowing cross-country comparison.
+
+Before aggregating many goods, however, we need clean language for the change of a *single* variable. That is the next section.
+
+## 6.2 Rates of variation and growth factors
+
+Let $Y_t$ denote the value of a variable in period $t$.
+
+::: {.callout-note}
+## Definition: absolute variation, rate of variation, growth factor
+:::
+
+The **absolute variation** between $t-1$ and $t$ is
+
+$$
+\Delta_{t/t-1} = Y_t - Y_{t-1},
+$$
+
+measured in the same units as $Y$. The **rate of variation** (relative change, growth rate) is
+
+$$
+T_{t/t-1} = \frac{Y_t - Y_{t-1}}{Y_{t-1}} = \frac{Y_t}{Y_{t-1}} - 1,
+$$
+
+and the **unit variation factor** (growth factor) is
+
+$$
+F_{t/t-1} = \frac{Y_t}{Y_{t-1}} = 1 + T_{t/t-1}.
+$$
+
+A factor of $1.05$ means a 5% increase; a factor of $0.97$ means a 3% decrease.
+
+### 6.2.1 Compounding: factors multiply, rates do not add
+
+If a quantity grows over several periods, the overall change is the *product* of the per-period factors, not the sum of the per-period rates.
+
+::: {.callout-warning}
+## Common mistake: averaging growth by adding rates
+
+It is tempting to summarise a multi-period growth experience by *adding* the period-by-period rates. Don't. Rates compound multiplicatively. If a series grows by 10% one year and falls by 10% the next, it does *not* return to its starting value: $1.10 \times 0.90 = 0.99$, a 1% net decline.
+:::
+
+Formally:
+
+$$
+F_{T/0} = \frac{Y_T}{Y_0} = \prod_{t=1}^{T} F_{t/t-1}, \qquad
+1 + T_{T/0} = \prod_{t=1}^{T} (1 + T_{t/t-1}).
+$$
+
+### 6.2.2 The average rate of variation is a geometric mean
+
+The **average rate of variation** $\bar{T}$ over $T$ periods is the constant rate that, applied each period, reproduces the observed overall change:
+
+$$
+(1 + \bar{T})^T = \frac{Y_T}{Y_0} \quad\Longrightarrow\quad
+\bar{T} = \left(\frac{Y_T}{Y_0}\right)^{1/T} - 1.
+$$
+
+Equivalently, $1 + \bar{T}$ is the **geometric mean** of the $T$ unit variation factors.
+
+::: {.callout-note}
+## Example: consumption expenditure, Dec 2015 – Jun 2016
+
+A household's monthly consumption (EUR) is 1,800, 1,850, 1,830, 1,870, 1,910, 1,940, 1,980 from December 2015 through June 2016 (so $Y_0 = 1{,}800$, $Y_6 = 1{,}980$, $T = 6$ months). The overall six-month growth factor is $1{,}980 / 1{,}800 = 1.10$, a 10% rise. The average monthly rate is $(1.10)^{1/6} - 1 = 1.601\%$. The arithmetic mean of the six monthly rates is 1.61% — close, but biased upward.
+:::
+
+## 6.3 Elementary index numbers
+
+We now formalise the tracking of a single variable.
+
+::: {.callout-note}
+## Definition: elementary index number
+:::
+
+The **elementary** (or **simple**) **index number** of $Y$ in period $t$ with base period $0$ is
+
+$$
+I_{t/0} = \frac{Y_t}{Y_0} \times 100.
+$$
+
+It equals 100 in the base period and reports the level as a percentage of the base. An index of 125 means the variable is 25% higher than in the base period; an index of 90 means 10% lower. The rate of variation between any two periods can be recovered as
+
+$$
+T_{t/0} = \frac{I_{t/0} - 100}{100}.
+$$
+
+### 6.3.1 Properties: identity, inversion, circular (chain) {#sec-index-properties}
+
+::: {.callout-note}
+## Properties of elementary indices
+
+Let $I_{t/0}$ denote the elementary index of $Y$ in period $t$ with base $0$. Then:
+
+1. **Identity**: $I_{0/0} = 100$.
+2. **Inversion**: $I_{0/t} = 10{,}000 / I_{t/0}$.
+3. **Circular (chain) property**: for any intermediate period $t'$,
+   $$
+   I_{t/0} = \frac{I_{t/t'} \cdot I_{t'/0}}{100}, \qquad
+   I_{t/t'} = \frac{I_{t/0}}{I_{t'/0}} \times 100.
+   $$
+:::
+
+All three follow directly from the definition $I_{a/b} = (Y_a / Y_b) \times 100$. The circular property is the engine of base-changing and linking, which we will use heavily in Section 6.7.
+
+::: {.callout-note}
+## Example: chaining two indices
+
+Suppose a product's price index reads $I_{2015/2010} = 120$ and $I_{2020/2015} = 115$. Then by the circular property
+$$
+I_{2020/2010} = \frac{115 \cdot 120}{100} = 138.
+$$
+The price in 2020 was 38% higher than in 2010, and the implied inverse is $I_{2010/2020} = 10{,}000 / 138 = 72.46$.
+:::
+
+## 6.4 Composite (synthetic) indices: Laspeyres, Paasche, Fisher
+
+In practice we rarely care about a single price. The CPI aggregates hundreds of items; a stock index aggregates dozens of firms. We need **composite (synthetic) indices**.
+
+The two natural design choices for an aggregator are *whether to weight* and, if so, *which period's weights to use*. Unweighted aggregators (the Sauerbeck mean of elementary indices and the Bradstreet–Dutot ratio of arithmetic means) treat all goods equally, which is unrealistic — a household spends a much larger share on housing than on matches. The serious composite indices are the weighted ones.
+
+### 6.4.1 Laspeyres price index
+
+::: {.callout-note}
+## Definition: Laspeyres price index
+:::
+
+Let $p_{i,t}$ and $q_{i,t}$ denote price and quantity of good $i$ in period $t$. The **Laspeyres price index** weights elementary price relatives by **base-period quantities**:
+
+$$
+L_P^{t/0} = \frac{\sum_{i=1}^{n} p_{i,t}\, q_{i,0}}{\sum_{i=1}^{n} p_{i,0}\, q_{i,0}} \times 100.
+$$
+
+Equivalently, it is the weighted arithmetic mean of elementary price indices with **base-period expenditure shares** as weights:
+
+$$
+L_P^{t/0} = \sum_{i=1}^{n} w_{i,0}\, I_{i}^{t/0}, \qquad
+w_{i,0} = \frac{p_{i,0}\, q_{i,0}}{\sum_j p_{j,0}\, q_{j,0}}.
+$$
+
+The Spanish IPC (and most national CPIs) is a Laspeyres-type index whose basket is refreshed every five years or so from household budget surveys.
+
+### 6.4.2 Paasche and Fisher price indices
+
+::: {.callout-note}
+## Definition: Paasche and Fisher price indices
+:::
+
+The **Paasche price index** uses **current-period quantities** as weights:
+
+$$
+P_P^{t/0} = \frac{\sum_{i=1}^{n} p_{i,t}\, q_{i,t}}{\sum_{i=1}^{n} p_{i,0}\, q_{i,t}} \times 100.
+$$
+
+The **Fisher price index** is the geometric mean of Laspeyres and Paasche:
+
+$$
+F_P^{t/0} = \sqrt{L_P^{t/0} \cdot P_P^{t/0}}.
+$$
+
+### 6.4.3 Substitution bias: which one tells the truth?
+
+When relative prices change, consumers substitute *away* from goods whose price has risen most. This has three consequences worth memorising.
+
+- **Laspeyres** keeps the base-period basket fixed, so it ignores substitution. It typically **overstates** the true cost-of-living change.
+- **Paasche** uses the current basket, which already embeds substitution. It typically **understates** the true cost-of-living change.
+- **Fisher** splits the difference. When prices and quantities co-move negatively (the normal case) we have $P_P \le F_P \le L_P$. Fisher is sometimes called the *ideal* index because it satisfies the time-reversal and factor-reversal tests that Laspeyres and Paasche fail.
+
+::: {.callout-warning}
+## Common mistake: reading the IPC as a cost-of-living change
+
+A 5% rise in the Laspeyres-type IPC does **not** mean the true cost of maintaining the same standard of living rose by 5%. Because the basket is held fixed, substitution toward cheaper goods is unobserved and the welfare-equivalent change is typically *less* than 5%.
+:::
+
+### 6.4.4 Full worked example: three-good basket
+
+A simple economy has three goods in 2020 (base) and 2024:
+
+| Good        | $p_0$ | $q_0$ | $p_t$ | $q_t$ |
+|-------------|------:|------:|------:|------:|
+| Bread (kg)  |  1.20 |   200 |  1.80 |   170 |
+| Milk (L)    |  0.90 |   300 |  1.10 |   310 |
+| Rice (kg)   |  1.50 |   100 |  2.10 |    80 |
+
+The four expenditure sums are $\sum p_0 q_0 = 660$, $\sum p_t q_0 = 900$, $\sum p_0 q_t = 603$, $\sum p_t q_t = 815$, so
+
+$$
+L_P = \frac{900}{660} \times 100 = 136.36, \quad
+P_P = \frac{815}{603} \times 100 = 135.16, \quad
+F_P = \sqrt{136.36 \cdot 135.16} = 135.75.
+$$
+
+As expected $P_P < F_P < L_P$, reflecting that consumers substituted away from bread and rice (whose prices rose 50% and 40%) toward the relatively cheaper milk.
+
+## 6.5 Quantity indices and the value decomposition
+
+Price and quantity play symmetric roles in index construction. Swap them and we obtain **quantity indices**.
+
+::: {.callout-note}
+## Definition: Laspeyres, Paasche, Fisher quantity indices
+:::
+
+$$
+L_Q^{t/0} = \frac{\sum p_{i,0}\, q_{i,t}}{\sum p_{i,0}\, q_{i,0}} \times 100, \qquad
+P_Q^{t/0} = \frac{\sum p_{i,t}\, q_{i,t}}{\sum p_{i,t}\, q_{i,0}} \times 100, \qquad
+F_Q^{t/0} = \sqrt{L_Q \cdot P_Q}.
+$$
+
+A Laspeyres quantity index of 112 means that, *valued at base-period prices*, the quantity bundle is 12% larger than in the base period.
+
+The **value index** measures the change in total expenditure:
+
+$$
+V^{t/0} = \frac{\sum p_{i,t}\, q_{i,t}}{\sum p_{i,0}\, q_{i,0}} \times 100.
+$$
+
+Because $\sum p_t q_t$ contains both price and quantity movements, the value index decomposes cleanly:
+
+::: {.callout-note}
+## Theorem: value index decomposition
+
+For any basket,
+
+$$
+V^{t/0} = \frac{L_P^{t/0} \cdot P_Q^{t/0}}{100} = \frac{P_P^{t/0} \cdot L_Q^{t/0}}{100}.
+$$
+:::
+
+The two cross-pairings ($L_P$ with $P_Q$, or $P_P$ with $L_Q$) are exact algebraic identities; the all-Laspeyres or all-Paasche pairings hold only approximately. A useful approximate decomposition uses Fisher on both sides: $V \approx F_P \cdot F_Q / 100$.
+
+::: {.callout-note}
+## Example: continuing the three-good basket
+
+Continuing from §6.4.4, $V = 815/660 \times 100 = 123.48$ and $P_Q = 815/900 \times 100 = 90.56$. Check: $L_P \cdot P_Q / 100 = 1.3636 \cdot 0.9056 \cdot 100 = 123.50$ (the residual 0.02 is pure rounding). Prices rose by 36% while real quantities *fell* by 9%, giving a net 23% rise in total expenditure.
+:::
+
+## 6.6 Aggregating the CPI: sub-group weights and contributions {#sec-cpi-aggregation}
+
+The IPC is not computed directly over all consumer goods. The INE first builds twelve sub-group indices (food, housing, transport, …), each a Laspeyres-type composite, and then aggregates them with expenditure-share weights:
+
+$$
+\text{CPI}_{t/0} = \sum_{g=1}^{G} w_g \cdot I_{g,t/0}, \qquad \sum_g w_g = 1.
+$$
+
+The **contribution** of sub-group $g$ to the overall CPI change is
+
+$$
+C_g = w_g \times (I_{g,t/0} - 100), \qquad \sum_g C_g = \text{CPI}_{t/0} - 100.
+$$
+
+This identity is the standard tool for explaining headline inflation: a 7%-of-basket transport sub-index up by 35% contributes $0.07 \times 35 = 2.45$ percentage points, regardless of what is happening elsewhere.
+
+::: {.callout-note}
+## Example: who is driving overall inflation?
+
+In a five-group toy CPI with weights (food 0.25, housing 0.30, transport 0.15, clothing 0.10, other 0.20) and 2024 sub-indices (128, 118, 135, 105, 110), the overall index is $0.25 \cdot 128 + \dots + 0.20 \cdot 110 = 120.15$. The largest *contribution* is food (7.0 pp) — even though transport had the largest *price increase* (35%), its small weight means it contributes only 5.25 pp.
+:::
+
+## 6.7 Linking and re-basing series
+
+Statistical agencies periodically refresh the basket and reset the base. Spain's IPC has used bases 1983, 1992, 2001, 2006, 2011, 2016, and 2021. To build a long series we must **link** segments.
+
+::: {.callout-note}
+## Definition: linking (rebasing)
+:::
+
+To convert an index from base $b_1$ to a new base $b_2$:
+
+$$
+I_{t/b_2} = \frac{I_{t/b_1}}{I_{b_2/b_1}} \times 100.
+$$
+
+This is just the circular property of §6.3.1 applied to a base change.
+
+::: {.callout-note}
+## Example: chaining a CPI across two bases
+
+Spanish CPI base 1992 reports $I_{2001/1992} = 132.5$; base 2001 reports $I_{2005/2001} = 115.4$. The 2005 index on base 1992 is then
+
+$$
+I_{2005/1992} = \frac{115.4 \cdot 132.5}{100} = 152.91.
+$$
+
+Prices in 2005 were 52.9% higher than in 1992.
+:::
+
+The same machinery works in either direction. To bring an old-base series onto a new base, divide by the bridging value; to push a new-base series backward, multiply by it.
+
+## 6.8 Deflation: from nominal to real
+
+When comparing monetary values across time, we must strip out the effect of price changes.
+
+::: {.callout-note}
+## Definition: deflation
+:::
+
+To **deflate** a nominal value $Y_t^{\text{nom}}$ using price index $I_{t/0}$ is to compute the **real (constant-price) value**
+
+$$
+Y_t^{\text{real}} = \frac{Y_t^{\text{nom}}}{I_{t/0} / 100} = \frac{Y_t^{\text{nom}}}{I_{t/0}} \times 100.
+$$
+
+The real value is expressed *in base-year euros* — euros with the purchasing power of the base year.
+
+A closely related quantity is the **required salary** that would have preserved purchasing power. If a worker earned $S_0$ in the base period, the salary needed in period $t$ to buy the same basket is
+
+$$
+S_t^{\text{required}} = S_0 \cdot \frac{I_{t/0}}{100}.
+$$
+
+If actual $S_t < S_t^{\text{required}}$, purchasing power has been lost.
+
+::: {.callout-note}
+## Example: nominal vs real GDP
+
+For a country with nominal GDP (EUR bn) of 500, 520, 480, 530, 575, 610 and a GDP deflator (base 2018 = 100) of 100.0, 102.5, 103.8, 108.0, 116.5, 121.0 over 2018–2023, real GDP in 2018 euros is 500.0, 507.3, 462.4, 490.7, 493.6, 504.1. Nominal output grew 22%; *real* output grew only 0.8%. The 2020 recession (visible as the drop to 462.4) is invisible if one looks only at nominal figures.
+:::
+
+## 6.9 A causality caveat
+
+Index numbers are descriptive summaries. Two indices that move together — say, the Spanish SMI and the IPC — do **not** prove that one caused the other. Confounders (energy shocks, post-COVID demand, ECB monetary policy) can move both series jointly. Causal claims require either an explicit experiment or a credible identifying restriction, neither of which is supplied by the index machinery developed in this chapter. We will return to this point repeatedly in [Chapter 7](07-time-series.qmd) and in TC2 / Econometrics I.
+
+## 6.10 R Lab — A mini-CPI for a Granada student basket
+
+The lab builds a five-good *student basket* (coffee, bus pass, rent, textbooks, beer), computes Laspeyres / Paasche / Fisher price *and* quantity indices, deflates a monthly allowance, links two CPI segments, and finally compares the Spanish minimum wage (SMI) against the IPC.
+
+### 6.10.1 Setup
+
+```{r ch06-setup}
+#| message: false
+#| warning: false
+set.seed(2026)
+# No external libraries needed — base R is sufficient here.
+```
+
+### 6.10.2 Elementary index for a single good
+
+```{r ch06-coffee}
+years  <- 2019:2024
+coffee <- c(1.10, 1.15, 1.20, 1.30, 1.40, 1.55)
+names(coffee) <- years
+
+I_coffee <- coffee / coffee["2019"] * 100
+round(I_coffee, 2)
+```
+
+Coffee prices have risen about 41% between 2019 and 2024.
+
+### 6.10.3 Rates of variation and the geometric-mean average
+
+```{r ch06-rates}
+rov <- diff(coffee) / coffee[-length(coffee)] * 100
+names(rov) <- paste0(years[-1], "/", years[-length(years)])
+round(rov, 2)
+
+# Geometric-mean average annual rate
+n_periods   <- length(coffee) - 1
+total_ratio <- coffee[length(coffee)] / coffee[1]
+avg_rate    <- (total_ratio^(1 / n_periods) - 1) * 100
+round(avg_rate, 2)
+```
+
+The geometric-mean average rate is the correct summary; the arithmetic mean of the annual rates would over-state the true growth.
+
+### 6.10.4 Student basket — Laspeyres, Paasche, Fisher (price)
+
+```{r ch06-basket}
+goods <- c("Coffee", "Bus pass", "Rent", "Textbooks", "Beer")
+p0 <- c(1.15, 40, 350, 45, 1.80)    # prices in 2020
+p1 <- c(1.55, 52, 420, 50, 2.30)    # prices in 2024
+q0 <- c(300, 10, 12, 6, 200)        # quantities in 2020
+q1 <- c(280, 10, 12, 5, 180)        # quantities in 2024
+
+L_P <- sum(p1 * q0) / sum(p0 * q0) * 100
+P_P <- sum(p1 * q1) / sum(p0 * q1) * 100
+F_P <- sqrt(L_P * P_P)
+round(c(Laspeyres = L_P, Paasche = P_P, Fisher = F_P), 2)
+```
+
+Prices for the student basket rose roughly 19–20% between 2020 and 2024. Fisher lies between Laspeyres and Paasche, as the substitution-bias story predicts.
+
+### 6.10.5 Quantity indices and the value decomposition
+
+```{r ch06-quantity}
+L_Q <- sum(q1 * p0) / sum(q0 * p0) * 100
+P_Q <- sum(q1 * p1) / sum(q0 * p1) * 100
+F_Q <- sqrt(L_Q * P_Q)
+round(c(L_Q = L_Q, P_Q = P_Q, F_Q = F_Q), 2)
+
+# Two ways to compute the value index
+V_direct <- sum(p1 * q1) / sum(p0 * q0) * 100
+V_decomp <- L_P * P_Q / 100
+round(c(direct = V_direct, decomposition = V_decomp), 2)
+```
+
+The decomposition $V = L_P \cdot P_Q / 100$ holds exactly (up to floating-point error).
+
+### 6.10.6 Deflation: nominal vs real student allowance
+
+```{r ch06-deflation}
+years_d   <- 2020:2024
+nominal   <- c(600, 620, 640, 670, 700)
+price_idx <- c(100, 105.2, 110.8, 116.0, 122.6)
+real      <- nominal / price_idx * 100
+
+data.frame(year = years_d, nominal, price_idx, real = round(real, 2))
+```
+
+```{r ch06-deflation-plot}
+#| fig-width: 7
+#| fig-height: 4.5
+#| fig-cap: "Nominal vs real student allowance (real expressed in 2020 EUR)."
+plot(years_d, nominal, type = "o", pch = 16, col = "steelblue",
+     ylim = c(540, 720), lwd = 2,
+     xlab = "Year", ylab = "EUR / month",
+     main = "Nominal vs real student allowance")
+lines(years_d, real, type = "o", pch = 17, col = "tomato", lwd = 2)
+legend("topleft", legend = c("Nominal", "Real (2020 EUR)"),
+       col = c("steelblue", "tomato"), pch = c(16, 17),
+       lwd = 2, bty = "n")
+```
+
+The nominal allowance climbs from 600 to 700 EUR per month, but the real allowance (in 2020 EUR) falls to about 571 — purchasing power has *declined* because prices grew faster than the allowance.
+
+### 6.10.7 Linking two CPI segments
+
+```{r ch06-linking}
+# Old series, base 2015 = 100, 2015–2019
+old_base <- c(100, 101.5, 103.2, 105.0, 107.1)
+names(old_base) <- 2015:2019
+
+# New series, base 2019 = 100, 2019–2024
+new_base <- c(100, 102.3, 105.1, 109.4, 112.6, 116.0)
+names(new_base) <- 2019:2024
+
+# Link the old series to the new base (2019 = 100)
+link_factor   <- 100 / old_base["2019"]
+old_linked    <- old_base * as.numeric(link_factor)
+
+# Combine, dropping the duplicate 2019 from the old segment
+linked_series <- c(old_linked[1:4], new_base)
+round(linked_series, 2)
+```
+
+The two segments now sit on a common base (2019 = 100) and can be analysed as one continuous series.
+
+### 6.10.8 Real-data example: Spanish minimum wage vs IPC
+
+```{r ch06-smi}
+year_rd <- 2018:2024
+smi     <- c(735.9, 900.0, 950.0, 965.0, 1000.0, 1080.0, 1134.0)
+cpi_rd  <- c(95.1, 95.8, 95.5, 98.0, 106.1, 109.9, 113.2)
+
+smi_idx  <- smi    / smi[1]    * 100   # SMI rebased to 2018 = 100
+cpi_idx  <- cpi_rd / cpi_rd[1] * 100   # IPC rebased to 2018 = 100
+real_smi <- smi_idx / cpi_idx * 100
+
+round(data.frame(year = year_rd, smi_idx, cpi_idx, real_smi), 2)
+```
+
+```{r ch06-smi-plot}
+#| fig-width: 7
+#| fig-height: 4.5
+#| fig-cap: "Spanish minimum wage (SMI) vs IPC, both rebased to 2018 = 100, and the implied real SMI."
+plot(year_rd, smi_idx, type = "o", pch = 16, col = "steelblue",
+     ylim = c(95, 160), lwd = 2,
+     xlab = "Year", ylab = "Index (2018 = 100)",
+     main = "SMI vs IPC, base 2018 = 100")
+lines(year_rd, cpi_idx,  type = "o", pch = 17, col = "tomato", lwd = 2)
+lines(year_rd, real_smi, type = "o", pch = 18, col = "darkgreen", lwd = 2)
+legend("topleft",
+       legend = c("Nominal SMI", "IPC", "Real SMI"),
+       col = c("steelblue", "tomato", "darkgreen"),
+       pch = c(16, 17, 18), lwd = 2, bty = "n")
+```
+
+The real SMI rose substantially over 2018–2024 — nominal SMI growth outpaced inflation. Two warnings, both echoing §6.9: (i) the SMI is an *instrument* set by policy, not an outcome that should be deflated like a market wage; (ii) the co-movement of SMI and IPC does not identify a causal effect of SMI on inflation. Both series respond to broader macroeconomic forces.
+
+## Self-check {.unnumbered}
+
+::: {.callout-tip collapse="true"}
+## Q1. Reading an elementary index
+
+An index for the price of coffee in 2024 (base 2019 = 100) equals 141. Which statement is correct?
+
+- A. Coffee was 141% more expensive in 2024 than in 2019.
+- B. Coffee in 2024 cost 41% more than in 2019.
+- C. Coffee in 2024 cost 1.41 EUR if it cost 1 EUR in 2019.
+- D. Coffee in 2024 cost 41 EUR more than in 2019.
+
+**Answer: B.** The index 141 means the 2024 price is 141% *of* the 2019 price — equivalently, 41% higher. Option A confuses "of" with "more than"; D confuses index points with EUR. Option C is true arithmetically (the price of a 1 EUR coffee is now 1.41 EUR) but the percentage statement is the conventional interpretation.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q2. Geometric vs arithmetic average growth
+
+If a series goes from 100 (year 0) to 150 (year 5), the average annual rate of variation is:
+
+- A. $(150 - 100)/5 = 10\%$ per year (arithmetic mean of the increase).
+- B. $(1.50)^{1/5} - 1 \approx 8.45\%$ per year (geometric mean of factors).
+- C. $50 / 5 = 10\%$ per year, since the index is multiplicative.
+- D. Cannot be computed without the intermediate values.
+
+**Answer: B.** Growth rates compound, so the constant rate that produces the observed five-fold-period increase is the geometric mean of the factors, $1.5^{1/5} \approx 1.0845$. Options A and C treat compounding as additive and over-state the rate.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q3. Which weights does Laspeyres use?
+
+The Laspeyres price index weights elementary price relatives by:
+
+- A. Base-period quantities $q_0$.
+- B. Current-period quantities $q_1$.
+- C. The arithmetic mean of $q_0$ and $q_1$.
+- D. The geometric mean of $q_0$ and $q_1$.
+
+**Answer: A.** Laspeyres is the cost of the *base-period basket* at current prices, divided by the cost of the same basket at base-period prices. Paasche uses the current basket; Fisher takes a geometric mean of the two values, not of the quantities themselves.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q4. Substitution bias
+
+When relative prices change, consumers substitute away from goods whose price has risen most. As a result:
+
+- A. Laspeyres tends to overstate the cost-of-living change; Paasche tends to understate it.
+- B. Laspeyres tends to understate; Paasche tends to overstate.
+- C. Both indices are unbiased, since they use observed transactions.
+- D. The bias depends only on the base year, not on substitution.
+
+**Answer: A.** Laspeyres holds the old basket fixed, ignoring substitution toward cheaper goods, and so over-states the cost increase. Paasche uses the new basket, which already reflects substitution, and so under-states it. Fisher splits the difference.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q5. Deflating a wage
+
+A worker's nominal wage rises 20% while the CPI rises 30% over the same period. The real wage has:
+
+- A. Risen by about 20%.
+- B. Fallen by roughly 7.7% (since $1.20 / 1.30 - 1 \approx -0.077$).
+- C. Stayed constant — the increases roughly cancel out.
+- D. Risen, because nominal income grew.
+
+**Answer: B.** Real growth equals the *ratio* of nominal growth to price growth, not their difference. The wage buys $1.20 / 1.30 \approx 92.3\%$ of the basket it used to buy.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q6. Real GDP
+
+If nominal GDP grows 4% and the GDP deflator grows 5%, real GDP:
+
+- A. Grows about 4%.
+- B. Falls by roughly 1% (real output shrank).
+- C. Grows about 9%.
+- D. Stays constant.
+
+**Answer: B.** Real GDP equals nominal GDP divided by the deflator (×100); $1.04 / 1.05 \approx 0.990$, a 1% contraction in real terms. C confuses real growth with the sum of the two changes.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q7. Linking two CPI segments
+
+An old CPI (base 2010 = 100) reads 107.1 in 2019. A new CPI (base 2019 = 100) reads 116.0 in 2024. To link both into one continuous series with 2019 = 100:
+
+- A. Multiply the old series by $100/107.1$ and leave the new series unchanged.
+- B. Multiply the new series by $107.1 / 100$.
+- C. Take the arithmetic mean of the two series in 2019.
+- D. Subtract 7.1 from every old value.
+
+**Answer: A.** Dividing the old series by 107.1 (and multiplying by 100) re-anchors it so that the bridging year 2019 reads 100 — exactly the value the new series already shows. Option B re-anchors the wrong segment.
+:::
+
+::: {.callout-tip collapse="true"}
+## Q8. Causality
+
+Spain's nominal Minimum Wage (SMI) and the IPC both rose between 2018 and 2024. A journalist writes: *"Minimum-wage hikes caused inflation."* What is the most appropriate critique from this course?
+
+- A. The claim is correct because Laspeyres overstates inflation.
+- B. Both series trend upward, but co-movement of two indices over a few years cannot identify the causal effect of SMI on inflation. Confounders (energy shock, post-COVID demand, ECB policy) drive both series.
+- C. There is no problem — if both series went up, one must cause the other.
+- D. The claim is correct only if Fisher equals Paasche.
+
+**Answer: B.** Index numbers are descriptive; co-movement is consistent with many causal stories, including third-factor confounding. Identifying the causal effect of a policy on inflation requires either an experiment or a credible identifying restriction — beyond the scope of TC1.
+:::
+
+## Exercises {.unnumbered}
+
+### Exercise 6.1 ★ — Quarterly revenue: absolute and relative rates
+
+The quarterly revenue (thousand EUR) of a small business is Q1 = 120, Q2 = 138, Q3 = 150, Q4 = 162.
+
+(a) Compute the absolute variation between each pair of consecutive quarters.
+(b) Compute the rate of variation (growth rate) between each pair.
+(c) In which quarter was the growth rate highest?
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+(a) $\Delta_{Q2} = 18$, $\Delta_{Q3} = 12$, $\Delta_{Q4} = 12$ (thousand EUR).
+(b) $T_{Q2} = 18/120 = 15.00\%$, $T_{Q3} = 12/138 = 8.70\%$, $T_{Q4} = 12/150 = 8.00\%$.
+(c) Q2 had the largest growth rate (15%), even though the absolute change in Q2 and Q3 was different by only 6 thousand EUR.
+:::
+
+### Exercise 6.2 ★ — Average growth from link factors
+
+Annual production (tonnes) is 800, 856, 924, 980 over 2020–2023.
+
+(a) Compute the link factors $f_t = Y_t / Y_{t-1}$.
+(b) Compute the average annual growth rate as the geometric mean of the link factors.
+(c) Verify with $\bar{T} = (Y_T / Y_0)^{1/T} - 1$.
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+(a) $f_{2021} = 856/800 = 1.0700$, $f_{2022} = 924/856 \approx 1.0794$, $f_{2023} = 980/924 \approx 1.0606$.
+(b) Product $\approx 1.2250$; cube root $\approx 1.0701$, so $\bar{T} \approx 7.01\%$.
+(c) $(980/800)^{1/3} - 1 = 1.2250^{1/3} - 1 \approx 7.01\%$. Confirmed.
+:::
+
+### Exercise 6.3 ★ — Elementary index and the circular property
+
+The price (EUR/kg) of a commodity is 4.00 (2021), 4.60 (2022), 5.29 (2023).
+
+(a) Compute $I_{2022/2021}$ and $I_{2023/2021}$.
+(b) Compute $I_{2023/2022}$.
+(c) Verify the circular property $I_{2023/2021} = I_{2023/2022} \cdot I_{2022/2021} / 100$.
+
+::: {.callout-tip collapse="true"}
+## Solution
+
+(a) $I_{2022/2021} = (4.60/4.00) \cdot 100 = 115.00$; $I_{2023/2021} = (5.29/4.00) \cdot 100 = 132.25$.
+(b) $I_{2023/2022} = (5.29/4.60) \cdot 100 = 115.00$.
+(c) $115 \cdot 115 / 100 = 132.25$. Confirmed.
+:::
+
+### Exercise 6.4 ★★ — Laspeyres, Paasche, Fisher with four goods
+
+A family consumes apples, chicken, olive oil, and pasta. In 2019: prices (EUR) 2.00, 5.50, 4.00, 1.20 and quantities 50, 30, 20, 40. In 2024: prices 2.80, 7.20, 8.50, 1.50 and quantities 40, 28, 12, 55.
+
+(a) Compute $L_P^{2024/2019}$, $P_P^{2024/2019}$, $F_P^{2024/2019}$.
+(b) Compute the value index $V^{2024/2019}$.
+(c) Verify the decomposition $V = L_P \cdot P_Q / 100$.
+(d) Identify the substitution effect from the data.
+
+### Exercise 6.5 ★★ — Linking Spanish CPI across a base change
+
+Spain changed CPI base from 2016 to 2021. Available data: base 2016 reads 103.2 (2018), 104.0 (2019), 103.5 (2020), 106.8 (2021); base 2021 reads 100.0 (2021), 108.4 (2022), 112.1 (2023).
+
+(a) Express all values on base 2016 = 100.
+(b) Express all values on base 2021 = 100.
+(c) Compute cumulative inflation from 2018 to 2023.
+
+### Exercise 6.6 ★★ — Deflating a nominal wage series
+
+Annual nominal salary (EUR) is 24,000, 24,600, 25,400, 26,800, 28,000 over 2019–2023. CPI (base 2019 = 100) is 100.0, 100.8, 103.5, 112.0, 116.2.
+
+(a) Compute the real salary (in 2019 EUR) for each year.
+(b) Compute cumulative *nominal* growth 2019 → 2023.
+(c) Compute cumulative *real* growth 2019 → 2023.
+(d) Comment on the worker's purchasing-power trajectory.
+
+### Exercise 6.7 ★★ — Required salary and purchasing power
+
+A Granada professor earned EUR 36,000 in 2019. Spanish CPI (base 2016 = 100) is 104.5 (2019) and 121.3 (2024).
+
+(a) Compute the salary in 2024 that would preserve 2019 purchasing power.
+(b) If the actual 2024 salary is EUR 39,500, has purchasing power risen or fallen?
+(c) Compute the percentage change in purchasing power.
+
+### Exercise 6.8 ★★★ — CPI aggregation and inflation drivers
+
+A four-sub-group CPI has weights and indices in 2022 (= 100 across the board), 2023, and 2024:
+
+| Sub-group | Weight | CPI 2023 | CPI 2024 |
+|-----------|-------:|---------:|---------:|
+| Food      |   0.30 |    110.5 |    114.2 |
+| Housing   |   0.35 |    104.0 |    108.6 |
+| Transport |   0.20 |    115.8 |    118.3 |
+| Other     |   0.15 |    102.5 |    105.0 |
+
+(a) Compute the overall CPI for 2023 and 2024.
+(b) Compute year-on-year inflation rates for 2023 and 2024.
+(c) Compute each sub-group's contribution to 2023 inflation and identify the principal driver.
+(d) Has inflation accelerated or decelerated from 2023 to 2024? Comment in light of the substitution-bias warning in §6.4.3.

@@ -1,0 +1,150 @@
+---
+title: "Statistical Reference Tables"
+---
+
+> *Status: ported 2026-05-19. Reviewed by editor: pending.*
+
+This appendix gathers the small set of reference tables most useful in a descriptive and probabilistic course: the standard-normal CDF, binomial and Poisson probability mass values for the parameter combinations that recur in worked examples and exercises, and a short list of standard-normal critical values. Because the entries below are produced inside R by the distribution functions `pnorm()`, `dbinom()`, and `dpois()`, they are exact to machine precision rather than rounded to fewer decimals as in printed appendices. A reader who wants a value not listed here can simply re-run the corresponding chunk with extra rows or columns. Fuller critical-value tables for the $t$, $F$, and $\chi^{2}$ distributions belong to the inferential setting of TC2 / Econometrics I and are reproduced in that book's reference appendix.
+
+## B.1 Standard normal CDF — $\Phi(z)$ {#sec-b-norm}
+
+The table reports $\Phi(z) = P(Z \leq z)$ for the standard normal random variable $Z \sim N(0, 1)$. Rows index the first decimal of $z$ (from $0.0$ to $3.4$ in steps of $0.1$); columns index the second decimal (from $0.00$ to $0.09$). The entry in row $z = 1.2$ and column $0.06$, for instance, is $\Phi(1.26)$. For **negative** arguments use the symmetry of the standard normal:
+$$
+\Phi(-z) = 1 - \Phi(z), \qquad z > 0.
+$$
+
+```{r appB-norm-table}
+#| echo: false
+#| message: false
+#| tbl-cap: "Standard normal CDF $\\Phi(z) = P(Z \\leq z)$ for $z \\in [0.00, 3.49]$. Rows: first decimal of $z$. Columns: second decimal."
+
+z_row <- seq(0.0, 3.4, by = 0.1)
+z_col <- seq(0.00, 0.09, by = 0.01)
+
+phi_tab <- outer(z_row, z_col, function(r, c) pnorm(r + c))
+phi_tab <- as.data.frame(phi_tab)
+colnames(phi_tab) <- sprintf("0.%02d", round(z_col * 100))
+phi_tab <- cbind(z = sprintf("%.1f", z_row), phi_tab)
+
+knitr::kable(
+  phi_tab,
+  digits = 4,
+  align  = c("l", rep("r", length(z_col)))
+)
+```
+
+The two most-used entries are worth memorising: $\Phi(1.96) \approx 0.9750$ (so $P(-1.96 < Z < 1.96) \approx 0.95$) and $\Phi(2.576) \approx 0.9950$ (so $P(-2.576 < Z < 2.576) \approx 0.99$). The first appears in the section on the normal approximation to the binomial in Chapter 5.
+
+## B.2 Binomial probabilities — $P(X = k)$ {#sec-b-binom}
+
+The tables below tabulate the binomial PMF
+$$
+P(X = k) = \binom{n}{k} p^{k}(1-p)^{n-k}, \qquad k = 0, 1, \ldots, n,
+$$
+for the parameter pairs $(n, p)$ used most frequently in Chapter 5. Each table fixes $n$ and lets $p$ vary across the columns; rows index $k$. Entries smaller than $0.00005$ are displayed as $0.0000$.
+
+```{r appB-binom-table}
+#| echo: false
+#| message: false
+#| tbl-cap: "Binomial probabilities $P(X = k)$ for $n \\in \\{5, 10\\}$ and $p \\in \\{0.1, 0.2, 0.3, 0.5\\}$."
+
+p_vec <- c(0.1, 0.2, 0.3, 0.5)
+
+make_binom_block <- function(n, p_vec) {
+  k_vec <- 0:n
+  tab <- sapply(p_vec, function(p) dbinom(k_vec, size = n, prob = p))
+  tab <- as.data.frame(tab)
+  colnames(tab) <- paste0("p = ", format(p_vec, nsmall = 1))
+  cbind(n = c(as.character(n), rep("", n)),
+        k = as.character(k_vec),
+        tab)
+}
+
+binom_small <- rbind(
+  make_binom_block(5,  p_vec),
+  make_binom_block(10, p_vec)
+)
+
+knitr::kable(
+  binom_small,
+  digits = 4,
+  align  = c("l", "l", rep("r", length(p_vec)))
+)
+```
+
+```{r appB-binom-table-large}
+#| echo: false
+#| message: false
+#| tbl-cap: "Binomial probabilities $P(X = k)$ for $n \\in \\{15, 20\\}$ and $p \\in \\{0.1, 0.2, 0.3, 0.5\\}$."
+
+binom_large <- rbind(
+  make_binom_block(15, p_vec),
+  make_binom_block(20, p_vec)
+)
+
+knitr::kable(
+  binom_large,
+  digits = 4,
+  align  = c("l", "l", rep("r", length(p_vec)))
+)
+```
+
+For values of $p$ greater than $0.5$ use the symmetry $P(X = k \mid n, p) = P(X = n-k \mid n, 1-p)$: a binomial with success probability $0.7$ and $n = 10$ is read off the $p = 0.3$ column with $k$ replaced by $10 - k$.
+
+## B.3 Poisson probabilities — $P(X = k)$ {#sec-b-pois}
+
+The table reports the Poisson PMF
+$$
+P(X = k) = \frac{\lambda^{k} e^{-\lambda}}{k!}, \qquad k = 0, 1, 2, \ldots
+$$
+for the rate parameters $\lambda \in \{0.5, 1, 2, 3, 4, 5, 7, 10\}$ most often seen in exercises. Rows index $k$ from $0$ to $15$, which captures essentially all the mass for $\lambda \leq 10$ (the upper tail beyond $k = 15$ accounts for less than $0.05\%$ even at $\lambda = 10$).
+
+```{r appB-pois-table}
+#| echo: false
+#| message: false
+#| tbl-cap: "Poisson probabilities $P(X = k)$ for selected rate parameters $\\lambda$. Rows: $k = 0, 1, \\ldots, 15$. Columns: $\\lambda$."
+
+lambda_vec <- c(0.5, 1, 2, 3, 4, 5, 7, 10)
+k_vec      <- 0:15
+
+pois_tab <- sapply(lambda_vec, function(l) dpois(k_vec, lambda = l))
+pois_tab <- as.data.frame(pois_tab)
+colnames(pois_tab) <- paste0("λ = ", format(lambda_vec, nsmall = 1))
+pois_tab <- cbind(k = as.character(k_vec), pois_tab)
+
+knitr::kable(
+  pois_tab,
+  digits = 4,
+  align  = c("l", rep("r", length(lambda_vec)))
+)
+```
+
+A useful sanity check is that each column sums to (very nearly) $1$: for $\lambda \leq 10$ the truncation at $k = 15$ loses an essentially negligible amount of mass.
+
+## B.4 Selected standard-normal critical values {#sec-b-crit}
+
+For the few occasions in TC1 where a one- or two-sided "$z$-value" is referenced — chiefly the normal approximation to the binomial in Chapter 5 — the table below collects the three most-used standard-normal critical values $z_{1-\alpha}$, defined by $\Phi(z_{1-\alpha}) = 1 - \alpha$.
+
+```{r appB-crit-table}
+#| echo: false
+#| message: false
+#| tbl-cap: "Standard-normal critical values $z_{1-\\alpha}$: $z$ such that $\\Phi(z) = 1 - \\alpha$."
+
+alpha_vec <- c(0.05, 0.025, 0.01, 0.005)
+z_crit    <- qnorm(1 - alpha_vec)
+
+crit_tab <- data.frame(
+  alpha          = format(alpha_vec, nsmall = 3),
+  one_minus_alpha = format(1 - alpha_vec, nsmall = 3),
+  z              = z_crit
+)
+colnames(crit_tab) <- c("α", "1 − α", "z_{1−α}")
+
+knitr::kable(
+  crit_tab,
+  digits = 4,
+  align  = c("r", "r", "r")
+)
+```
+
+The entries reproduce the canonical pair $z_{0.95} = 1.6449$ and $z_{0.975} = 1.9600$. Fuller critical-value tables for the $t$, $F$, and $\chi^{2}$ distributions — needed only once hypothesis testing enters the picture — live in the reference appendix of TC2 / Econometrics I.

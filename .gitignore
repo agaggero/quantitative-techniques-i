@@ -1,0 +1,13 @@
+/.quarto/
+/en/_output/
+/en/_freeze/
+/en/.quarto/
+*.log
+*.aux
+*.toc
+*.out
+*.synctex.gz
+.RData
+.Rhistory
+.Rproj.user/
+*.Rproj
