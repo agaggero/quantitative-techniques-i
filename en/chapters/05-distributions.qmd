@@ -746,4 +746,4 @@ A pharmaceutical company produces batches of 200 tablets; 2% of tablets are unde
 (a) Justify why the binomial is a reasonable model for the number of under-dosed tablets $X$, even though the underlying sampling is without replacement.
 (b) Compute $P(X = 0)$ and $P(X \geq 2)$.
 (c) The batch is rejected if $X \geq 2$. What is the rejection probability?
-(d) Management wants the rejection probability to be at most 5%. Find (numerically) the maximum defect rate $p^\*$ that achieves this, keeping $n = 20$ and the same rejection rule.
+(d) Management wants the rejection probability to be at most 5%. Find (numerically) the maximum defect rate $p^*$ that achieves this, keeping $n = 20$ and the same rejection rule.
