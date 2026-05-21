@@ -24,7 +24,7 @@ The chapter follows the chocolate-factory running example through every section,
 
 ## 5.1 Why study named distributions?
 
-In the previous topic we described a discrete random variable by listing every possible value together with its probability. That approach is general but exhausting: every new problem seems to require building a probability model from scratch. In practice a small number of *patterns* recur across economics, finance, quality control, epidemiology and marketing. Statisticians have given these recurring patterns names, and each named distribution comes with:
+`\lettrine[lines=3]{I}{n}`{=latex} the previous topic we described a discrete random variable by listing every possible value together with its probability. That approach is general but exhausting: every new problem seems to require building a probability model from scratch. In practice a small number of *patterns* recur across economics, finance, quality control, epidemiology and marketing. Statisticians have given these recurring patterns names, and each named distribution comes with:
 
 - A **closed-form PMF** $p(x) = P(X = x)$ that lets you compute probabilities with a single formula instead of enumerating outcomes.
 - **Ready-made formulas** for the mean $\mu$ and variance $\sigma^2$.

@@ -60,31 +60,39 @@ format:
         \usepackage{booktabs}
         \usepackage{amsmath,amssymb,amsthm,mathtools}
         \usepackage{bm}
+        \usepackage{lettrine}
 
-        % --- Thesis-style title page ---
+        % --- Thesis-style title page (title between hrules) ---
         \makeatletter
         \renewcommand{\maketitle}{%
           \begin{titlepage}
             \centering
-            \vspace*{3.5cm}
+            \vspace*{4cm}
 
-            {\Huge\scshape \@title\par}
-            \vspace{1.2cm}
+            \hrule
+            \vspace{1cm}
 
+            {\Huge\bfseries \@title\par}
             \ifx\@subtitle\@empty\else
+              \vspace{0.5cm}
               {\Large\itshape \@subtitle\par}
             \fi
-            \vspace{3.5cm}
+            \vspace{1cm}
+            \hrule
 
-            {\large\textbf{\@author}\par}
-            \vspace{0.8cm}
+            \vspace{3cm}
 
-            {\normalsize\textsc{Universidad de Granada}\par}
-            \vspace{0.2cm}
-            {\normalsize\itshape Faculty of Economics and Business Studies\par}
-            \vspace{1.5cm}
+            {\large\scshape \@author\par}
 
-            {\large\@date\par}
+            \vspace{2cm}
+
+            {\normalsize Open educational resource published by the\\[0.3em]
+                         Faculty of Economics and Business Studies,\\[0.3em]
+                         \textsc{Universidad de Granada}\par}
+
+            \vspace{3cm}
+
+            {\large\scshape \@date\par}
 
             \vfill
 

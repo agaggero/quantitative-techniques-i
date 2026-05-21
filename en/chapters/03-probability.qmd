@@ -24,7 +24,7 @@ The intuitive answer "about 99%" is wrong by an order of magnitude --- the corre
 
 ## 3.1 Random experiments and sample spaces
 
-In the first two chapters we *described* data that had already been collected. We now shift to **modelling uncertainty**: how should we reason about outcomes that have not yet occurred? The mathematical framework is **probability theory**.
+`\lettrine[lines=3]{I}{n}`{=latex} the first two chapters we *described* data that had already been collected. We now shift to **modelling uncertainty**: how should we reason about outcomes that have not yet occurred? The mathematical framework is **probability theory**.
 
 ::: {.callout-note}
 ## Definition: random experiment

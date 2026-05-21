@@ -23,7 +23,7 @@ The running example throughout this chapter is a simulated sample of 80 AirBnB n
 
 ## 1.1 What statistics is — and is not
 
-**Statistics** is the science of collecting, organising, analysing, interpreting, and presenting data to support effective decision-making. It is conventionally divided into two branches:
+`\lettrine[lines=3]{S}{tatistics}`{=latex} is the science of collecting, organising, analysing, interpreting, and presenting data to support effective decision-making. It is conventionally divided into two branches:
 
 - **Descriptive statistics** — methods to organise, summarise, and present data, reducing large amounts of information into a few key numbers or graphs. The headline "the unemployment rate in Spain was $11.8\%$ in Q4 2024" is a descriptive statistic.
 - **Inferential statistics** — uses a *sample* to make estimates, predictions, or decisions about a *population*. "Based on a survey of 1,500 consumers, $62\%$ prefer online shopping" is an inferential statement.

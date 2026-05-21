@@ -24,7 +24,7 @@ A Granada tapas restaurant has 15 months of paired data on advertising spend and
 
 ## 2.1 From one variable to two {#sec-intro}
 
-In [Chapter 1](01-univariate.qmd) we described a single variable: its frequency distribution, centre, spread, and shape. In economics, however, the interesting questions are almost always about how variables *move together*. Does education affect income? Does advertising spending track sales? Does GDP growth coincide with falling unemployment?
+`\lettrine[lines=3]{I}{n}`{=latex} [Chapter 1](01-univariate.qmd) we described a single variable: its frequency distribution, centre, spread, and shape. In economics, however, the interesting questions are almost always about how variables *move together*. Does education affect income? Does advertising spending track sales? Does GDP growth coincide with falling unemployment?
 
 To answer such questions we need **bivariate descriptive statistics**: tools that summarise the joint behaviour of two variables observed on the same set of individuals.
 

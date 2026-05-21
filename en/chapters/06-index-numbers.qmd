@@ -30,7 +30,7 @@ The Spanish *Salario Mínimo Interprofesional* (SMI) rose from EUR 736 per month
 An **index number** is a statistical measure that expresses the relative change of a variable (or a group of variables) with respect to a **reference period**, called the **base period**. Index numbers are conventionally scaled so that the base period equals 100.
 :::
 
-Index numbers turn up everywhere a comparison across time or across countries is needed:
+`\lettrine[lines=3]{I}{ndex}`{=latex} numbers turn up everywhere a comparison across time or across countries is needed:
 
 - The **Consumer Price Index (CPI / IPC)** tracks the cost of a representative household basket. The Spanish IPC, published monthly by the INE, is the most widely cited inflation indicator.
 - The **GDP deflator** converts nominal GDP to real GDP, isolating the volume of production from price movements.

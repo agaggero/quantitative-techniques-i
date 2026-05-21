@@ -23,7 +23,7 @@ The chapter is built around quarterly business series — hotel stays, consumer 
 
 ## 7.1 Introduction
 
-A **time series** is a sequence of observations recorded at successive, equally spaced points in time. We denote the value at time $t$ by $Y_t$, so a series of length $n$ is written
+`\lettrine[lines=3]{A}{}`{=latex} **time series** is a sequence of observations recorded at successive, equally spaced points in time. We denote the value at time $t$ by $Y_t$, so a series of length $n$ is written
 
 $$
 Y_1,\; Y_2,\; Y_3,\; \ldots,\; Y_n.

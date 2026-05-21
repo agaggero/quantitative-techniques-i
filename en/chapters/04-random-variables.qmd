@@ -24,7 +24,7 @@ In Topic 3 we built the language of probability around abstract sample spaces. I
 
 ## 4.1 Random variables: from outcomes to numbers
 
-In Topic 3 the elements of $\Omega$ could be anything — heads/tails, defective/non-defective, expansion/contraction. The full machinery of calculus and algebra only becomes available once outcomes are *numbers*.
+`\lettrine[lines=3]{I}{n}`{=latex} Topic 3 the elements of $\Omega$ could be anything — heads/tails, defective/non-defective, expansion/contraction. The full machinery of calculus and algebra only becomes available once outcomes are *numbers*.
 
 ::: {.callout-note}
 ## Definition: random variable
