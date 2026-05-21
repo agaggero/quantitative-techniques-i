@@ -22,7 +22,7 @@ These three questions illustrate the three counting frameworks at the heart of t
 
 The chapter follows the chocolate-factory running example through every section, then pivots to insurance, lotteries, server crashes and startup pitching in the worked examples and exercises.
 
-## 5.1 Why study named distributions?
+## Why study named distributions?
 
 `\lettrine[lines=3]{I}{n}`{=latex} the previous topic we described a discrete random variable by listing every possible value together with its probability. That approach is general but exhausting: every new problem seems to require building a probability model from scratch. In practice a small number of *patterns* recur across economics, finance, quality control, epidemiology and marketing. Statisticians have given these recurring patterns names, and each named distribution comes with:
 
@@ -49,7 +49,7 @@ The distributions we study in this chapter are listed below. The discrete unifor
 
 The **negative binomial** distribution (number of failures before the $r$-th success) generalises the geometric; we mention it briefly at the end.
 
-### 5.1.1 The discrete uniform (warm-up)
+### The discrete uniform (warm-up)
 
 A random variable $X$ follows a **discrete uniform distribution** on $\{1, 2, \ldots, k\}$ if each value is equally likely:
 
@@ -65,7 +65,7 @@ $$
 
 The canonical example is a fair $k$-sided die: for $k = 6$, $\mu = 3.5$ and $\sigma^2 = 35/12 \approx 2.917$. We will not dwell on it; it is included only because it is the simplest possible discrete model.
 
-## 5.2 The Bernoulli distribution
+## The Bernoulli distribution
 
 Many situations involve a single trial with exactly two possible outcomes: a customer buys or does not buy, a product is defective or not, a loan defaults or does not. The Bernoulli distribution models this basic building block.
 
@@ -95,7 +95,7 @@ The variance $p(1 - p)$ is maximised at $p = 0.5$ (maximum uncertainty) and equa
 - **Defective item.** A factory produces light bulbs with a 2% defect rate. Then $p = 0.02$, $\mathbb{E}[X] = 0.02$ and $\operatorname{Var}(X) = 0.0196$.
 :::
 
-## 5.3 The Binomial distribution
+## The Binomial distribution
 
 Now suppose we repeat a Bernoulli experiment $n$ times and count the total number of successes. If every trial is *independent* and the probability of success $p$ remains the same on each trial, the count follows a binomial distribution.
 
@@ -116,7 +116,7 @@ $$
 \mu = np, \qquad \sigma^2 = np(1 - p).
 $$
 
-### 5.3.1 When does the binomial apply?
+### When does the binomial apply?
 
 The binomial model applies whenever **all three** of the following conditions hold:
 
@@ -129,7 +129,7 @@ The binomial model applies whenever **all three** of the following conditions ho
 If sampling is done *without* replacement from a finite population, the trials are not independent and $p$ changes from trial to trial. The correct model is then the **hypergeometric** (Section 5.4). A common rule of thumb: if the sample is less than 5% of the population ($n < 0.05 N$), the binomial is an excellent approximation.
 :::
 
-### 5.3.2 Shape of the binomial PMF
+### Shape of the binomial PMF
 
 The shape of $B(n, p)$ depends critically on $p$. With $n = 10$:
 
@@ -139,7 +139,7 @@ The shape of $B(n, p)$ depends critically on $p$. With $n = 10$:
 
 In general $B(n, p)$ and $B(n, 1 - p)$ are mirror images of each other.
 
-### 5.3.3 Worked example: factory defects
+### Worked example: factory defects
 
 A factory produces electronic components with a defect rate of 5%. An inspector randomly selects 20 components; let $X$ be the number of defectives. Items are sampled from a large lot, so $X \sim B(20, 0.05)$.
 
@@ -159,7 +159,7 @@ $$
 \mu = np = 1, \qquad \sigma = \sqrt{np(1 - p)} = \sqrt{0.95} \approx 0.9747.
 $$
 
-### 5.3.4 Business example: online returns
+### Business example: online returns
 
 An online retailer ships 50 orders per day; each is returned with probability $p = 0.03$. Let $X$ be the daily number of returns, so $X \sim B(50, 0.03)$.
 
@@ -169,7 +169,7 @@ An online retailer ships 50 orders per day; each is returned with probability $p
 
 So even though the *average* is 1.5 returns, there is a 6.3% chance that the daily returns desk will be overwhelmed if it can only handle three.
 
-## 5.4 The Hypergeometric distribution {#sec-hypergeometric}
+## The Hypergeometric distribution {#sec-hypergeometric}
 
 The binomial assumes either sampling with replacement or sampling from a population so large that removing one item barely changes the probabilities. In many settings — inspecting a small lot, auditing a finite set of accounts, drawing cards — we sample **without replacement**. The hypergeometric handles this case.
 
@@ -195,7 +195,7 @@ The mean has the same form as the binomial mean $np$ with $p = K/N$. The varianc
 As $N \to \infty$ with $K/N \to p$ fixed and $n$ fixed, the hypergeometric converges to $B(n, p)$. Practical rule: if $n < 0.05 N$, use the binomial as an approximation.
 :::
 
-### 5.4.1 Worked example: lot inspection
+### Worked example: lot inspection
 
 A shipment of $N = 20$ items contains $K = 4$ defectives. An inspector draws $n = 5$ items without replacement. The probability of finding exactly $k = 2$ defectives is
 
@@ -205,7 +205,7 @@ $$
 
 The expected number of defectives is $\mu = 5 \times \frac{4}{20} = 1$, and the variance is $5 \times 0.2 \times 0.8 \times \frac{15}{19} = 0.6316$.
 
-### 5.4.2 Lottery example: Loter\'ia Primitiva
+### Lottery example: Loter\'ia Primitiva
 
 In the Spanish *Loter\'ia Primitiva*, a player picks 6 numbers from 1 to 49 and the draw produces 6 winning numbers. Let $X$ be the number of matches between the player's selection and the winning numbers, so $X \sim \mathrm{Hyp}(49, 6, 6)$.
 
@@ -213,7 +213,7 @@ In the Spanish *Loter\'ia Primitiva*, a player picks 6 numbers from 1 to 49 and 
 - $\mathbb{E}[X] = 6 \times \frac{6}{49} = 0.7347$ matches.
 - The jackpot: $P(X = 6) = 1 / \binom{49}{6} \approx 7.15 \times 10^{-8}$, roughly 1 in 14 million.
 
-## 5.5 The Poisson distribution
+## The Poisson distribution
 
 The Poisson distribution models the number of events that occur in a fixed interval of time, space, or other continuum, under the assumption that events occur independently and at a constant average rate.
 
@@ -234,7 +234,7 @@ $$
 
 This **equidispersion** property is the Poisson's signature. Empirical count data that show variance much larger than the mean ("overdispersion") signal that the Poisson is the wrong model — a common situation in applied work.
 
-### 5.5.1 Conditions and typical scenarios
+### Conditions and typical scenarios
 
 The Poisson applies when:
 
@@ -245,7 +245,7 @@ The Poisson applies when:
 
 Typical applications include customers arriving at a bank per hour, typos per page, accidents per month at an intersection, emails per day, server crashes per year, and earthquakes of magnitude $\geq 6.0$ per year in a region.
 
-### 5.5.2 Worked example: call centre
+### Worked example: call centre
 
 A call centre receives on average $\lambda = 3$ calls per minute. Let $X$ be the number of calls in a randomly selected minute, so $X \sim \mathrm{Poisson}(3)$.
 
@@ -255,11 +255,11 @@ A call centre receives on average $\lambda = 3$ calls per minute. Let $X$ be the
 
 **Scaling property.** If $X$ counts calls per minute with rate $\lambda = 3$, then the number of calls in 2 minutes follows $\mathrm{Poisson}(2 \times 3) = \mathrm{Poisson}(6)$. The rate is proportional to the length of the interval — one of the most useful features of the Poisson.
 
-### 5.5.3 Shape of the Poisson PMF
+### Shape of the Poisson PMF
 
 For small $\lambda$ the Poisson is heavily right-skewed (most mass at 0 and 1); as $\lambda$ grows the distribution becomes more symmetric and bell-shaped. For $\lambda \geq 10$ it closely resembles a normal distribution — a manifestation of the Central Limit Theorem we will explore in a later course.
 
-## 5.6 The Poisson approximation to the Binomial
+## The Poisson approximation to the Binomial
 
 When the number of trials $n$ is large and the success probability $p$ is small, $B(n, p)$ is well approximated by $\mathrm{Poisson}(\lambda = np)$. This is both theoretically important and practically useful: computing $\binom{n}{k}$ for large $n$ can be tedious by hand.
 
@@ -268,7 +268,7 @@ When the number of trials $n$ is large and the success probability $p$ is small,
 If $n \geq 30$ and $p \leq 0.10$ (equivalently $np \leq 10$), then $B(n, p) \approx \mathrm{Poisson}(np)$. The approximation improves as $n$ increases and $p$ decreases.
 :::
 
-### 5.6.1 Worked example: website complaints
+### Worked example: website complaints
 
 A large website receives 1000 visits per day. Each visit generates a complaint with probability $p = 0.002$. Exact distribution: $X \sim B(1000, 0.002)$. Approximation: $\mathrm{Poisson}(\lambda = 2)$.
 
@@ -283,7 +283,7 @@ A large website receives 1000 visits per day. Each visit generates a complaint w
 
 The two columns are virtually identical. The expected number of daily complaints is $\lambda = 2$, with $\sigma = \sqrt{2} \approx 1.41$.
 
-## 5.7 The Geometric distribution
+## The Geometric distribution
 
 The geometric models the number of **failures before the first success** in a sequence of independent Bernoulli trials.
 
@@ -307,7 +307,7 @@ $$
 Some books count the **trial number** of the first success instead, $Y = X + 1$, with $P(Y = k) = (1 - p)^{k - 1} p$ for $k = 1, 2, \ldots$ and $\mathbb{E}[Y] = 1/p$. R's `dgeom` uses the "failures before first success" convention (i.e., $X$, starting at 0). Always check which one a source assumes.
 :::
 
-### 5.7.1 The memoryless property
+### The memoryless property
 
 The geometric distribution is the **only** discrete distribution with the **memoryless property**:
 
@@ -317,7 +317,7 @@ $$
 
 Past failures contain no information about the future: every trial is identical regardless of history. This is sometimes a useful normative reminder ("don't get discouraged — each call is a fresh trial") but also a strong modelling limitation. In reality, fatigue, learning effects, or selection on order (good leads called first) often make later trials behave differently.
 
-### 5.7.2 Worked example: door-to-door sales
+### Worked example: door-to-door sales
 
 A salesman has a 20% chance of making a sale at each house ($p = 0.2$); let $X$ be the number of failures before the first sale. Then $X \sim \mathrm{Geom}(0.2)$.
 
@@ -325,7 +325,7 @@ A salesman has a 20% chance of making a sale at each house ($p = 0.2$); let $X$ 
 - $P(X = 0) = (0.8)^0 \times 0.2 = 0.2$: 20% chance the very first house is a sale.
 - $P(X > 4) = (0.8)^5 = 0.3277$, so $P(X \leq 4) = 0.6723$ — about a 67% chance of a sale within five visits.
 
-### 5.7.3 Business example: startup fundraising
+### Business example: startup fundraising
 
 A founder pitches to venture-capital firms; each pitch has $p = 0.08$ of receiving an offer. Let $X$ be the number of rejections before the first offer, so $X \sim \mathrm{Geom}(0.08)$.
 
@@ -335,7 +335,7 @@ A founder pitches to venture-capital firms; each pitch has $p = 0.08$ of receivi
 
 By the memoryless property, the probability of being funded in the next 3 pitches *given 8 prior rejections* is still $0.2213$ — the 8 rejections carry no information.
 
-## 5.8 The Negative Binomial (brief mention)
+## The Negative Binomial (brief mention)
 
 A natural generalisation of the geometric asks: how many failures occur before the **$r$-th** success?
 
@@ -350,7 +350,7 @@ $$
 
 with mean $\mu = r(1 - p)/p$ and variance $\sigma^2 = r(1 - p)/p^2$. When $r = 1$ this reduces to the geometric. Continuing the startup example, if three independent offers are needed for a full funding round, then $X \sim \mathrm{NB}(3, 0.08)$ with $\mathbb{E}[X] = 34.5$ rejections expected.
 
-## 5.9 Identifying the right distribution
+## Identifying the right distribution
 
 The most important applied skill in this chapter is *recognising* which distribution to use. The questions below — answered in order — work for every scenario in this course.
 
@@ -371,7 +371,7 @@ The most important applied skill in this chapter is *recognising* which distribu
 | Poisson$(\lambda)$ | $\dfrac{e^{-\lambda}\lambda^k}{k!}$ | $\lambda$ | $\lambda$ |
 | Geom$(p)$ | $(1 - p)^k\, p$ | $\dfrac{1 - p}{p}$ | $\dfrac{1 - p}{p^2}$ |
 
-## 5.10 R Lab — PMFs, CDFs and the chocolate factory
+## R Lab — PMFs, CDFs and the chocolate factory
 
 The running theme of this lab is **quality control at a chocolate factory**. Each section introduces a distribution through a realistic scenario.
 
@@ -381,7 +381,7 @@ The running theme of this lab is **quality control at a chocolate factory**. Eac
 set.seed(2026)
 ```
 
-### 5.10.1 Binomial: the d/p/q/r family
+### Binomial: the d/p/q/r family
 
 A chocolate factory has a 5% defect rate. An inspector samples 20 bars: $X \sim B(20, 0.05)$.
 
@@ -418,7 +418,7 @@ sigma_b <- sqrt(n * p * (1 - p))
 cat("E[X] =", mu_b, "  SD[X] =", round(sigma_b, 3), "\n")
 ```
 
-### 5.10.2 Binomial shape across $p$
+### Binomial shape across $p$
 
 The shape of $B(n, p)$ changes dramatically with $p$. Side-by-side PMFs for $n = 10$:
 
@@ -435,7 +435,7 @@ par(op)
 
 Low $p$ gives right-skew, $p = 0.5$ is symmetric, high $p$ gives left-skew.
 
-### 5.10.3 Poisson
+### Poisson
 
 The customer-service desk receives an average of 3 complaints per day: $Y \sim \mathrm{Poisson}(3)$.
 
@@ -461,7 +461,7 @@ par(op)
 
 For small $\lambda$ the distribution is right-skewed; as $\lambda$ grows it becomes nearly symmetric — an illustration of the CLT applied to count data.
 
-### 5.10.4 Hypergeometric
+### Hypergeometric
 
 Two scenarios.
 
@@ -484,7 +484,7 @@ barplot(probs_h, col = "tomato", border = "white",
         xlab = "Defectives found", ylab = "Probability")
 ```
 
-### 5.10.5 Geometric and the memoryless property
+### Geometric and the memoryless property
 
 A salesperson closes a deal with probability $p = 0.20$ per visit. Let $W$ be the number of *failures* before the first success: $W \sim \mathrm{Geom}(0.20)$ in R's convention.
 
@@ -508,7 +508,7 @@ cat("P(W >", t, ")             =",     round(uncond, 4), "\n")
 
 The two numbers are identical: past failures contain no information about the future.
 
-### 5.10.6 Binomial–Poisson approximation, visualised
+### Binomial–Poisson approximation, visualised
 
 Set $n = 1000$, $p = 0.002$, so $\lambda = np = 2$.
 

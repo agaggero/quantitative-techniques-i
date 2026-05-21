@@ -21,7 +21,7 @@ By the end of this chapter the reader should be able to:
 
 The chapter is built around quarterly business series — hotel stays, consumer complaints, ice-cream sales, electricity consumption — that exhibit both a smooth long-run movement (trend) and a repeating within-year pattern (seasonality). The running example in the R Lab is **quarterly ice-cream sales of a shop in Granada (2020 Q1 – 2023 Q4)** with summer peaks and winter troughs.
 
-## 7.1 Introduction
+## Introduction
 
 `\lettrine[lines=3]{A}{}`{=latex} **time series** is a sequence of observations recorded at successive, equally spaced points in time. We denote the value at time $t$ by $Y_t$, so a series of length $n$ is written
 
@@ -38,7 +38,7 @@ A time series of length $n$ is a sequence $Y_1, Y_2, \ldots, Y_n$ of observation
 
 The first step in any time-series analysis is always to **plot the data**. A time plot puts $t$ on the horizontal axis and $Y_t$ on the vertical axis, with consecutive points joined by line segments.
 
-## 7.2 The four components
+## The four components
 
 Classical decomposition splits $Y_t$ into four systematic pieces:
 
@@ -53,7 +53,7 @@ Classical decomposition splits $Y_t$ into four systematic pieces:
 
 For the short and medium series typical of an introductory course (a few years of quarterly or monthly data), it is common practice to merge the cyclical movement into the trend, writing $T_t$ for the combined trend–cycle. The remaining decomposition then reads $Y_t \approx T_t + S_t + I_t$ or $Y_t \approx T_t \times S_t \times I_t$.
 
-### 7.2.1 Additive vs.\ multiplicative model
+### Additive vs.\ multiplicative model
 
 The four components can be combined in two ways.
 
@@ -83,11 +83,11 @@ Inspect the **amplitude of the seasonal swings** in the time plot:
 Most economic series exhibit the multiplicative pattern because percentage fluctuations tend to remain stable while absolute fluctuations grow with the level.
 :::
 
-## 7.3 Trend estimation
+## Trend estimation
 
 Two complementary descriptive approaches: **moving averages** (nonparametric smoothing) and **ordinary least squares** (a parametric line in time).
 
-### 7.3.1 Trend by moving averages
+### Trend by moving averages
 
 A moving average replaces each observation by the average of its neighbours, smoothing out short-run noise to reveal the long-run drift.
 
@@ -114,7 +114,7 @@ Two important consequences:
 For quarterly data ($s = 4$), a simple 4-term MA sits between two quarters. If you label it at the second quarter of the window you bias the trend half a step forward. Always centre by averaging two consecutive 4-term MAs.
 :::
 
-### 7.3.2 Trend by OLS
+### Trend by OLS
 
 The simplest parametric trend is a straight line in time,
 
@@ -145,7 +145,7 @@ $$
 
 So $\hat{T}_t = 62.748 + 2.515\,t$. Complaints grow by about $2.515$ per quarter, or roughly $10$ per year. The annual increment $b\times s = 2.515\times 4 \approx 10.06$ confirms this.
 
-### 7.3.3 Moving averages vs.\ OLS — when to use which?
+### Moving averages vs.\ OLS — when to use which?
 
 | | Moving averages | OLS trend |
 |---|---|---|
@@ -157,7 +157,7 @@ So $\hat{T}_t = 62.748 + 2.515\,t$. Complaints grow by about $2.515$ per quarter
 
 Moving averages are the natural first descriptive look; OLS is the natural choice when a linear drift is plausible and we want to extrapolate.
 
-## 7.4 Seasonal variation indices (IVE)
+## Seasonal variation indices (IVE)
 
 Once the trend is estimated, we quantify the seasonal pattern. The **Seasonal Variation Indices** (IVE, from the Spanish *Índices de Variación Estacional*) measure how each season typically deviates from the trend.
 
@@ -179,7 +179,7 @@ $$
 \sum_{j=1}^{s} E_j \;=\; 0.
 $$
 
-### 7.4.1 The ratio-to-trend method (multiplicative)
+### The ratio-to-trend method (multiplicative)
 
 The standard method for the multiplicative IVE proceeds in four steps:
 
@@ -212,7 +212,7 @@ The sum is essentially $4$, so $c \approx 1$ and the adjusted indices are
 
 Q2 is 23.6% above trend (spring activity), Q3 23.8% below (holiday calm), Q1 7.9% below, Q4 8.0% above.
 
-## 7.5 Deseasonalisation
+## Deseasonalisation
 
 Raw data can mislead when seasons differ widely — toy sales in March are naturally lower than in December, but does that mean the industry is in trouble? We remove the seasonal effect to see the underlying level.
 
@@ -231,7 +231,7 @@ Y^*_{\text{Mar}} = \frac{400\,000}{0.60} = 666{,}667 = \frac{1\,200\,000}{1.80} 
 $$
 After removing the seasonal effect both months show the same underlying level — the apparent gulf was entirely seasonal.
 
-## 7.6 Forecasting
+## Forecasting
 
 With trend and seasonal indices in hand, forecasting reduces to extending the trend and reapplying the seasonal factor.
 
@@ -269,7 +269,7 @@ The descriptive forecast $\hat{Y}_t = \hat{T}_t \times \text{IVE}_j$ is an **ext
 3. **No causal claim.** A descriptive forecast is not a causal counterfactual — that machinery is the subject of TC2 and Econometrics I.
 :::
 
-## 7.7 R Lab — Granada ice-cream sales
+## R Lab — Granada ice-cream sales
 
 A worked descriptive analysis of quarterly ice-cream sales for a Granada shop (2020 Q1 – 2023 Q4): trend by moving averages and OLS, multiplicative IVE, deseasonalisation, and point forecasts for 2024.
 
@@ -279,7 +279,7 @@ A worked descriptive analysis of quarterly ice-cream sales for a Granada shop (2
 set.seed(2026)
 ```
 
-### 7.7.1 The data
+### The data
 
 We simulate sales (in thousands of euros) as the sum of a linear trend, a four-quarter seasonal pattern (Q3 is the summer peak), and small noise.
 
@@ -294,7 +294,7 @@ ts_data <- data.frame(Period = quarters, t = 1:16, Sales = sales)
 ts_data
 ```
 
-### 7.7.2 Plotting the series
+### Plotting the series
 
 ```{r ch07-plot-series}
 plot(1:16, sales, type = "o", pch = 16, col = "steelblue", lwd = 2,
@@ -306,7 +306,7 @@ grid(nx = NA, ny = NULL, col = "grey85")
 
 The plot shows an upward drift and a clear four-quarter cycle peaking every Q3.
 
-### 7.7.3 Centred MA(4)
+### Centred MA(4)
 
 For quarterly data we use a **4-term moving average**, centred because $s = 4$ is even.
 
@@ -332,7 +332,7 @@ legend("topleft", legend = c("Original", "MA(4)"),
 
 The MA strips the seasonal zigzag away, leaving a smooth upward path.
 
-### 7.7.4 OLS trend line
+### OLS trend line
 
 ```{r ch07-ols-trend}
 model <- lm(Sales ~ t, data = ts_data)
@@ -353,7 +353,7 @@ legend("topleft", legend = c("Original", "OLS trend"),
        col = c("steelblue", "darkgreen"), lwd = 2, bty = "n")
 ```
 
-### 7.7.5 Multiplicative seasonal indices (IVE)
+### Multiplicative seasonal indices (IVE)
 
 We follow the ratio-to-trend method. Step 1: ratios $Y_t / \hat{T}_t$.
 
@@ -382,7 +382,7 @@ abline(h = 1, lty = 2, col = "grey50")
 
 Q3 (summer) is the clear peak; Q1 (winter) the deepest trough.
 
-### 7.7.6 Deseasonalisation
+### Deseasonalisation
 
 ```{r ch07-deseas}
 ts_data$IVE    <- rep(round(ive, 4), 4)
@@ -402,7 +402,7 @@ legend("topleft", legend = c("Original", "Deseasonalised"),
 
 The deseasonalised series tracks the trend closely — the original spikes were almost entirely seasonal.
 
-### 7.7.7 Forecasting 2024
+### Forecasting 2024
 
 To forecast 2024 Q1–Q4 (periods $t = 17, \ldots, 20$) we extrapolate the OLS trend and reapply the seasonal indices.
 
@@ -435,7 +435,7 @@ legend("topleft", legend = c("Historical", "Forecast"),
        lty = c(1, 2), lwd = 2, bty = "n")
 ```
 
-### 7.7.8 Additive seasonal components (for contrast)
+### Additive seasonal components (for contrast)
 
 Same data, additive treatment. Residuals $Y_t - \hat{T}_t$, averaged by quarter and centred to sum to $0$:
 

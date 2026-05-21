@@ -22,7 +22,7 @@ By the end of this chapter the reader should be able to:
 
 The intuitive answer "about 99%" is wrong by an order of magnitude --- the correct answer is about 17%. Probability theory, and in particular Bayes' theorem, is the machinery that turns prior beliefs (the prevalence) and conditional evidence (the test result) into a posterior probability. The same logic governs credit-default models, fraud detection, recession indicators, and insurance pricing. This chapter builds that machinery from the ground up, starting with sample spaces and ending with the false-positive paradox and the Monty Hall problem.
 
-## 3.1 Random experiments and sample spaces
+## Random experiments and sample spaces
 
 `\lettrine[lines=3]{I}{n}`{=latex} the first two chapters we *described* data that had already been collected. We now shift to **modelling uncertainty**: how should we reason about outcomes that have not yet occurred? The mathematical framework is **probability theory**.
 
@@ -57,7 +57,7 @@ The following table records a few canonical examples.
 | Calls to a call centre in a day | $\{0, 1, 2, \ldots\}$ | $\infty$ (countable) |
 | Waiting time at a bus stop (min) | $[0, \infty)$ | $\infty$ (uncountable) |
 
-## 3.2 Events and operations on events
+## Events and operations on events
 
 ::: {.callout-note}
 ## Definition: event
@@ -103,7 +103,7 @@ The laws generalise to any finite (or countably infinite) collection of events. 
 Roll a die and let $A = \{2, 4, 6\}$ (even) and $B = \{1, 2, 3\}$ (at most 3). Then $A \cup B = \{1,2,3,4,6\}$, $A \cap B = \{2\}$, $\bar{A} = \{1,3,5\}$, and $A \setminus B = \{4, 6\}$. The events are *not* mutually exclusive because $A \cap B \ne \emptyset$.
 :::
 
-## 3.3 Axioms of probability
+## Axioms of probability
 
 The modern axiomatic foundation was set down by Kolmogorov in 1933. The entire theory rests on three rules.
 
@@ -158,7 +158,7 @@ $$
 
 So 85% of the students study at least one language; the remaining 15% study neither.
 
-## 3.4 Classical (Laplace) probability
+## Classical (Laplace) probability
 
 ::: {.callout-note}
 ## Definition: classical (Laplace) probability
@@ -184,7 +184,7 @@ The sample space has $\lvert\Omega\rvert = 36$ equally likely pairs. Let $A$ = "
 
 Counting arguments such as these rely on the basic combinatorial tools (permutations, combinations, binomial coefficients). A self-contained refresher lives in [Appendix A](appendix-a-prerequisites.qmd); here we use the formulas as needed.
 
-## 3.5 Conditional probability
+## Conditional probability
 
 Partial information about the outcome often changes our assessment of probabilities. This leads to **conditional probability**.
 
@@ -212,7 +212,7 @@ $$
 
 Knowing the die showed a number greater than 3 raises the probability of an even result from $1/2$ to $2/3$.
 
-### 3.5.1 The multiplication rule
+### The multiplication rule
 
 Rearranging the definition gives the **multiplication rule**:
 
@@ -238,7 +238,7 @@ $$
 
 The four terminal outcomes RR, RB, BR, BB have probabilities $20/56,\,15/56,\,15/56,\,6/56$, which sum to $1$ as required.
 
-### 3.5.2 Independence
+### Independence
 
 ::: {.callout-note}
 ## Definition: independent events
@@ -264,7 +264,7 @@ Two events are **mutually exclusive** if $A \cap B = \emptyset$; they cannot occ
 Toss a fair coin twice and let $A$ = "first toss is Heads", $B$ = "second toss is Heads". Then $P(A) = P(B) = 1/2$ and $P(A \cap B) = P(\{HH\}) = 1/4 = (1/2)(1/2)$. So $A$ and $B$ are independent, matching intuition.
 :::
 
-## 3.6 The birthday paradox
+## The birthday paradox
 
 A famous illustration of how badly intuition can mislead us is the **birthday problem**.
 
@@ -291,7 +291,7 @@ $$
 
 With only $n = 23$ people the probability exceeds 50%. The trap is that we mentally compare 365 days to the number of people, when the relevant count is the number of *pairs*: with 23 people there are $\binom{23}{2} = 253$ pairs, each with a small but non-trivial chance of matching. Pairwise counts grow quadratically, which is why the curve climbs so fast.
 
-## 3.7 Law of total probability
+## Law of total probability
 
 Many problems are easier to attack by first splitting $\Omega$ into a partition and then summing the conditional probabilities.
 
@@ -325,7 +325,7 @@ $$
 
 So 2.9% of all components are defective. The same calculation works for insurance claim rates, recession indicators, and any other "different sub-populations have different rates" problem.
 
-## 3.8 Bayes' theorem
+## Bayes' theorem
 
 Bayes' theorem *inverts* a conditional probability: given $P(B \mid A_i)$, it returns $P(A_i \mid B)$. It is the engine of every diagnostic test, every spam filter, and every credit-scoring algorithm.
 
@@ -347,7 +347,7 @@ The terminology is standard:
 
 In words: $\text{posterior} = \dfrac{\text{likelihood} \times \text{prior}}{\text{evidence}}.$
 
-### 3.8.1 The false-positive paradox
+### The false-positive paradox
 
 The Bayesian framework reveals an effect that is genuinely surprising the first time one sees it: a highly accurate test for a *rare* condition can still produce mostly false positives.
 
@@ -403,7 +403,7 @@ The PPV depends critically on the prevalence:
 
 The same logic governs fraud detection (a 99% accurate fraud filter swamps the analyst with false alarms if the true fraud rate is low), spam classification, and credit-risk scoring. **The base rate is the dominant input** — without it the test's accuracy alone is meaningless.
 
-### 3.8.2 Bayes in economics: market testing
+### Bayes in economics: market testing
 
 ::: {.callout-note}
 ## Example: market testing a new product
@@ -425,7 +425,7 @@ $$
 
 The positive test result raises the success probability from a prior of 40% to a posterior of 64% — useful, but far from a guarantee.
 
-## 3.9 The Monty Hall problem
+## The Monty Hall problem
 
 The **Monty Hall problem**, named after the host of *Let's Make a Deal*, is the most famous demonstration that conditioning on a *non-random* event can violently shift probabilities.
 
@@ -453,7 +453,7 @@ So *staying* wins with probability $1/3$ and *switching* wins with probability $
 
 The naive "two doors left, so 50/50" intuition treats the host's choice as random. It isn't. This is a textbook example of how conditioning on a non-random observation reshapes posterior beliefs.
 
-## 3.10 R Lab — Simulating probability with the law of large numbers
+## R Lab — Simulating probability with the law of large numbers
 
 Probability theory can feel abstract, but simulation makes it tangible. By running thousands of random experiments on a computer we can watch empirical frequencies converge to theoretical probabilities — the **law of large numbers** in action. Throughout this lab we set `set.seed(2026)` so results are reproducible across the whole book.
 

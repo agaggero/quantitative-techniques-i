@@ -22,7 +22,7 @@ By the end of this chapter the reader should be able to:
 
 A Granada tapas restaurant has 15 months of paired data on advertising spend and revenue. Looking at the two columns side by side does not answer the question: we need tools that *summarise the joint behaviour* of two variables. This chapter builds those tools --- contingency tables, scatter plots, covariance, correlation, and the descriptive OLS line --- and applies them to the restaurant dataset in [Section 2.7](02-bivariate.qmd#sec-rlab). Every method here is purely **descriptive**: it summarises the sample. Whether a relationship is *causal* or *transferable to the population* is a separate question and the subject of later courses [@wooldridge2020].
 
-## 2.1 From one variable to two {#sec-intro}
+## From one variable to two {#sec-intro}
 
 `\lettrine[lines=3]{I}{n}`{=latex} [Chapter 1](01-univariate.qmd) we described a single variable: its frequency distribution, centre, spread, and shape. In economics, however, the interesting questions are almost always about how variables *move together*. Does education affect income? Does advertising spending track sales? Does GDP growth coincide with falling unemployment?
 
@@ -49,7 +49,7 @@ A small bivariate dataset to keep in mind: a labour economist surveys $n=8$ rece
 
 The pair $(x_3, y_3) = (4, 1350)$ tells us that the third graduate studied for 4 years and earns 1350 EUR per month.
 
-## 2.2 Contingency tables and marginal distributions {#sec-contingency}
+## Contingency tables and marginal distributions {#sec-contingency}
 
 When $X$ and $Y$ take only a moderate number of distinct values (categorical variables, or quantitative variables that have been grouped), the bivariate data fit neatly into a **contingency table**, also called a **two-way frequency table**.
 
@@ -103,7 +103,7 @@ Reading off the **marginal distribution of faculty**: 40% Economics, 30% Law, 30
 Two different bivariate distributions can have the *same* marginal distributions but completely different joint distributions. The marginals on their own say nothing about the relationship between $X$ and $Y$ --- for that we need the full table.
 :::
 
-## 2.3 Conditional distributions {#sec-conditional}
+## Conditional distributions {#sec-conditional}
 
 A **conditional distribution** answers questions of the form *"Among students in the Economics faculty, what fraction prefers each study mode?"* We fix one variable and look at how the other distributes within that subgroup.
 
@@ -135,7 +135,7 @@ $$
 
 If $\bar{y}_{|X=x_i}$ changes systematically with $i$, that is again evidence of association.
 
-## 2.4 Statistical independence (descriptive) {#sec-independence}
+## Statistical independence (descriptive) {#sec-independence}
 
 Two variables are **statistically independent** when knowing one gives no information about the other.
 
@@ -175,7 +175,7 @@ Cell $(1,2)$: $f_{12} = 25/100 = 0.25$. Under independence: $0.60 \times 0.45 = 
 
 Because the equality fails for at least one cell, $X$ and $Y$ are dependent in this sample.
 
-## 2.5 Scatter plots: direction, form, strength {#sec-scatter}
+## Scatter plots: direction, form, strength {#sec-scatter}
 
 When both $X$ and $Y$ are quantitative, the natural graphical tool is the **scatter plot**: each pair $(x_i, y_i)$ is a point in the Cartesian plane. By convention the *explanatory* variable goes on the horizontal axis, the *response* variable on the vertical axis.
 
@@ -193,11 +193,11 @@ These three features are exactly what the numerical measures in the next section
 Summary statistics (covariance, correlation, regression) compress a cloud of points into a few numbers. Different clouds can produce *identical* numbers --- see [Section 2.6](02-bivariate.qmd#sec-anscombe) on Anscombe's quartet. A 30-second look at the scatter plot prevents disasters that no formula can warn you about.
 :::
 
-## 2.6 Covariance, correlation, and Anscombe's quartet {#sec-cov-corr}
+## Covariance, correlation, and Anscombe's quartet {#sec-cov-corr}
 
 The scatter plot gives a visual impression. To quantify the direction and strength of a *linear* relationship, we use two numerical measures: the covariance and Pearson's correlation.
 
-### 2.6.1 Covariance
+### Covariance
 
 ::: {.callout-note}
 ## Definition: sample covariance
@@ -226,7 +226,7 @@ where $\overline{xy} = \tfrac{1}{n}\sum_i x_i y_i$ is the mean of the products.
 Both limitations disappear once we normalise --- which is exactly what the correlation coefficient does.
 :::
 
-### 2.6.2 Pearson's correlation coefficient
+### Pearson's correlation coefficient
 
 ::: {.callout-note}
 ## Definition: Pearson's linear correlation coefficient
@@ -253,7 +253,7 @@ Its properties (provable from the definition; see Exercise 2.7) are:
 It means *no linear relationship*. A perfect inverted-U pattern can have $r \approx 0$ yet $Y$ is *fully* determined by $X$. The correlation coefficient is blind to curvature. Always plot the data.
 :::
 
-### 2.6.3 Worked example: study hours and exam scores
+### Worked example: study hours and exam scores
 
 Six students report weekly study hours $X$ and exam score $Y$:
 
@@ -298,7 +298,7 @@ $$
 
 An extremely strong positive linear association: in this sample, study hours and exam scores essentially line up.
 
-### 2.6.4 Anscombe's quartet --- a cautionary tale {#sec-anscombe}
+### Anscombe's quartet --- a cautionary tale {#sec-anscombe}
 
 In 1973, Francis Anscombe constructed four datasets that share nearly identical summary statistics --- means, variances, correlation $r \approx 0.816$, and OLS line $\hat y \approx 3.0 + 0.5x$ --- yet look completely different on a scatter plot:
 
@@ -313,11 +313,11 @@ In 1973, Francis Anscombe constructed four datasets that share nearly identical 
 Identical $r$, identical $a$ and $b$, identical $R^2$ --- four completely different stories. **Never trust summary statistics alone. Always look at the data.** We replicate Anscombe's quartet in R in [Section 2.7](02-bivariate.qmd#sec-rlab).
 :::
 
-## 2.7 The OLS regression line (descriptive) {#sec-ols}
+## The OLS regression line (descriptive) {#sec-ols}
 
 The correlation summarises *how strongly* two variables move together. To go further and *model* the relationship --- to predict $Y$ from $X$ --- we fit a straight line.
 
-### 2.7.1 The regression problem
+### The regression problem
 
 Given the $n$ pairs $(x_1,y_1), \ldots, (x_n, y_n)$, we look for the line
 
@@ -331,7 +331,7 @@ $$
 e_i = y_i - \hat{y}_i = y_i - (a + b x_i).
 $$
 
-### 2.7.2 The least-squares criterion
+### The least-squares criterion
 
 ::: {.callout-note}
 ## Definition: Ordinary Least Squares (OLS)
@@ -364,7 +364,7 @@ A few immediate observations:
 The line "$Y$ on $X$" minimises *vertical* squared distances and uses slope $b_{Y|X} = S_{XY}/S_X^2$. The line "$X$ on $Y$" minimises *horizontal* squared distances and uses slope $b_{X|Y} = S_{XY}/S_Y^2$. The two lines are *different* (unless $r = \pm 1$); they only coincide when all points lie on a single line. Pick the regression that matches your prediction direction.
 :::
 
-### 2.7.3 Worked example: GDP growth and unemployment
+### Worked example: GDP growth and unemployment
 
 GDP growth rate (%, $X$) and change in unemployment (percentage points, $Y$) for 11 European countries:
 
@@ -393,7 +393,7 @@ $$
 
 The fitted line is $\hat{y} = 1.465 - 0.657\,x$. Descriptively: countries that differ by one percentage point of GDP growth differ on average by $-0.657$ percentage points in unemployment change --- the cross-country shape of Okun's law.
 
-## 2.8 Goodness of fit: $R^2$ {#sec-r2}
+## Goodness of fit: $R^2$ {#sec-r2}
 
 The OLS line is *the* best linear summary --- but how good is the best? The answer is the coefficient of determination.
 
@@ -447,7 +447,7 @@ $$
 
 Then $r_{XY} = -0.997 / (1.232 \times 0.8123) \approx -0.996$ and $R^2 \approx 0.992$. About 99% of the cross-country variability in unemployment changes is captured by the linear fit on GDP growth in this sample.
 
-### 2.8.1 Prediction and the risk of extrapolation
+### Prediction and the risk of extrapolation
 
 The natural use of the regression line is **prediction**: given a new $x_0$, predict $\hat y_0 = a + b x_0$. Predictions are most trustworthy when $x_0$ lies near the centre of the observed $X$ range and when $R^2$ is high.
 
@@ -465,7 +465,7 @@ A vivid case: in Exercise 2.4 below, fitting a line to hotel prices of 40--140 E
 Within the observed $X$ range (**interpolation**) predictions are far more reliable.
 :::
 
-## 2.9 Correlation does not imply causation {#sec-causation}
+## Correlation does not imply causation {#sec-causation}
 
 This is perhaps the single most important slogan in applied statistics:
 
@@ -488,7 +488,7 @@ The lesson: no matter how tempting the causal story, **ask whether a confounder 
 
 Establishing causation requires either a controlled experiment (random assignment of $X$) or more sophisticated econometric methods (instrumental variables, panel data, natural experiments) developed in later courses [@wooldridge2020]. Descriptive statistics like covariance, correlation, and OLS regression *measure* an association --- nothing more.
 
-## 2.10 R Lab --- restaurant sales and ad spend {#sec-rlab}
+## R Lab --- restaurant sales and ad spend {#sec-rlab}
 
 We now reproduce the entire chapter on a small simulated dataset: 15 months of advertising spend (hundreds of euros) and revenue (thousands of euros) for a Granada tapas restaurant. As in [Chapter 1](01-univariate.qmd), data are simulated inline with a fixed seed for reproducibility.
 
@@ -498,7 +498,7 @@ We now reproduce the entire chapter on a small simulated dataset: 15 months of a
 library(dplyr)
 ```
 
-### 2.10.1 The dataset
+### The dataset
 
 ```{r ch02-data}
 set.seed(2026)
@@ -519,7 +519,7 @@ Quick univariate summary of each column --- the bivariate analysis will use what
 summary(restaurant[, c("Ad_Spend", "Sales")])
 ```
 
-### 2.10.2 Scatter plot
+### Scatter plot
 
 ```{r ch02-scatter}
 plot(ad_spend, sales,
@@ -532,7 +532,7 @@ plot(ad_spend, sales,
 
 The cloud rises from lower-left to upper-right with no obvious curvature and no extreme outliers --- positive, approximately linear, fairly strong.
 
-### 2.10.3 Covariance and correlation by hand and by R
+### Covariance and correlation by hand and by R
 
 ```{r ch02-cov-cor-manual}
 # By hand using the divisor n (chapter convention)
@@ -558,7 +558,7 @@ cat("cor()                 :", round(cor(ad_spend, sales), 3), "\n")
 
 A correlation around 0.9 indicates a strong positive linear association: in this sample, months with higher ad spending also have higher sales.
 
-### 2.10.4 The OLS line
+### The OLS line
 
 By hand from $b = S_{XY}/S_X^2$ and $a = \bar y - b\bar x$, then with `lm()`:
 
@@ -589,7 +589,7 @@ legend("topleft",
        col = "red", lwd = 2, bty = "n")
 ```
 
-### 2.10.5 $R^2$ two ways
+### $R^2$ two ways
 
 ```{r ch02-r-squared}
 R2_a <- summary(fit)$r.squared
@@ -600,7 +600,7 @@ cat("r_xy^2             :", round(R2_b, 4), "\n")
 
 The two values agree: in simple regression, $R^2 = r_{XY}^2$. Roughly four-fifths of the in-sample variation in monthly sales is captured by the linear fit on ad spend; the rest is residual.
 
-### 2.10.6 Residual plot (sanity check)
+### Residual plot (sanity check)
 
 A scatter of residuals against fitted values is the simplest diagnostic. If the line is the right shape and the spread of $Y$ does not change with $X$, the residuals should look like a featureless cloud around zero:
 
@@ -616,7 +616,7 @@ abline(h = 0, col = "red", lty = 2, lwd = 2)
 
 The residuals scatter around zero with no obvious pattern: the linear model looks adequate for this sample.
 
-### 2.10.7 Anscombe's quartet in four lines
+### Anscombe's quartet in four lines
 
 R ships with the `anscombe` dataset. Four scatter plots, four "identical" regression lines:
 

@@ -22,7 +22,7 @@ By the end of this chapter the reader should be able to:
 
 In Topic 3 we built the language of probability around abstract sample spaces. In practice, almost every business or economic question is numerical: how much profit, how many customers, what return? A **random variable** is the formal device that turns an abstract experiment into a real-valued quantity we can integrate, differentiate, and average. The running example throughout this chapter is the product-launch profit $X$, with three outcomes $-50$, $20$, $100$ (thousands of euros) and probabilities $0.20$, $0.50$, $0.30$ — concrete enough to compute, rich enough to illustrate every definition.
 
-## 4.1 Random variables: from outcomes to numbers
+## Random variables: from outcomes to numbers
 
 `\lettrine[lines=3]{I}{n}`{=latex} Topic 3 the elements of $\Omega$ could be anything — heads/tails, defective/non-defective, expansion/contraction. The full machinery of calculus and algebra only becomes available once outcomes are *numbers*.
 
@@ -40,7 +40,7 @@ By convention, random variables are written with uppercase letters ($X, Y, Z$) a
 Toss a fair coin twice. The sample space is $\Omega = \{HH, HT, TH, TT\}$. Define $X =$ number of heads. Then $X(TT) = 0$, $X(HT) = X(TH) = 1$, $X(HH) = 2$, and the distribution of $X$ is $P(X = 0) = 1/4$, $P(X = 1) = 1/2$, $P(X = 2) = 1/4$.
 :::
 
-### 4.1.1 Discrete vs continuous
+### Discrete vs continuous
 
 ::: {.callout-note}
 ## Definition: discrete random variable
@@ -59,7 +59,7 @@ Economic examples help:
 - **Discrete**: number of insurance claims per month; number of defective items in a shipment; credit rating category (AAA, AA, A, ...).
 - **Continuous**: daily stock returns; household income; GDP growth rate; waiting time at a service counter.
 
-## 4.2 Discrete distributions: the probability mass function
+## Discrete distributions: the probability mass function
 
 ::: {.callout-note}
 ## Definition: probability mass function (PMF)
@@ -76,7 +76,7 @@ $$
 
 The collection of pairs $\{(x_i, p(x_i))\}$ is the **probability distribution** of $X$. For the two-coin-toss example, the PMF is $p(0) = 1/4$, $p(1) = 1/2$, $p(2) = 1/4$, and $1/4 + 1/2 + 1/4 = 1$ as required.
 
-## 4.3 The cumulative distribution function
+## The cumulative distribution function
 
 The cumulative distribution function (CDF) is defined for *every* random variable — discrete, continuous, or mixed — and is often the most convenient single object to work with.
 
@@ -123,7 +123,7 @@ $$
 
 Probabilities of intervals are then trivial: $P(0 < X \leq 1) = F_X(1) - F_X(0) = 3/4 - 1/4 = 1/2$.
 
-## 4.4 Continuous distributions: the probability density function
+## Continuous distributions: the probability density function
 
 For a continuous random variable we cannot assign positive probability to individual points — there are uncountably many of them, and the probabilities would not sum to one. Probabilities are described instead by a density.
 
@@ -162,7 +162,7 @@ $P(a \leq X \leq b) = P(a < X < b) = P(a \leq X < b) = P(a < X \leq b)$. (For di
 Take $f_X(x) = 2x$ for $0 \leq x \leq 1$, zero elsewhere. **Validity**: $f_X \geq 0$ and $\int_0^1 2x\,dx = [x^2]_0^1 = 1$, both check. **Interval probability**: $P(0.3 \leq X \leq 0.7) = \int_{0.3}^{0.7} 2x\,dx = [x^2]_{0.3}^{0.7} = 0.49 - 0.09 = 0.40$. **CDF**: $F_X(x) = \int_0^x 2t\,dt = x^2$ for $0 \leq x \leq 1$, with $F_X(x) = 0$ for $x < 0$ and $F_X(x) = 1$ for $x > 1$. Check: $F_X(0.7) - F_X(0.3) = 0.49 - 0.09 = 0.40$, matching the direct integral.
 :::
 
-### 4.4.1 Discrete vs continuous: side-by-side
+### Discrete vs continuous: side-by-side
 
 | Feature | Discrete | Continuous |
 |---|---|---|
@@ -172,7 +172,7 @@ Take $f_X(x) = 2x$ for $0 \leq x \leq 1$, zero elsewhere. **Validity**: $f_X \ge
 | $P(a \leq X \leq b)$ | $\sum_{a \leq x_i \leq b} p(x_i)$ | $\int_a^b f_X(x)\,dx$ |
 | CDF shape | step function | smooth curve |
 
-## 4.5 Expectation
+## Expectation
 
 The expected value of $X$ is the probabilistic analogue of the sample mean from Topic 1. It is the long-run average value of $X$ over infinitely many repetitions of the experiment — physically, the centre of gravity (balance point) of the probability distribution.
 
@@ -207,7 +207,7 @@ $\mathbb{E}[X] = \int_0^1 x \cdot 2x\,dx = \int_0^1 2x^2\,dx = \tfrac{2}{3}$.
 The mean sits above $1/2$ because the density places more mass near $x = 1$.
 :::
 
-### 4.5.1 Expectation of a function: $\mathbb{E}[g(X)]$
+### Expectation of a function: $\mathbb{E}[g(X)]$
 
 For any (measurable) function $g$, the expected value of $g(X)$ is computed by weighting $g(x)$ by the probability mass or density at $x$:
 
@@ -218,7 +218,7 @@ $$
 
 The most-used case is $g(x) = x^2$, which gives the **second moment** $\mathbb{E}[X^2]$ — the building block of variance below.
 
-### 4.5.2 Linearity of expectation
+### Linearity of expectation
 
 For any constants $a, b$ and any random variable $X$,
 
@@ -234,7 +234,7 @@ This identity is fundamental: it requires no assumption on the distribution of $
 Suppose the daily number of textbooks sold $X$ has $\mathbb{E}[X] = 1.95$. Each book is sold for 25 euros, with daily fixed cost 30 euros, so daily profit is $Y = 25 X - 30$. Then $\mathbb{E}[Y] = 25 \cdot 1.95 - 30 = 18.75$ euros.
 :::
 
-## 4.6 Variance and standard deviation
+## Variance and standard deviation
 
 The expected value locates the centre of the distribution; the variance measures how far values typically fall from that centre.
 
@@ -289,7 +289,7 @@ A tyre factory inspects batches of three. Let $X$ count the defective tyres in a
 We already have $\mathbb{E}[X] = 2/3$ for the density $f_X(x) = 2x$. Compute $\mathbb{E}[X^2] = \int_0^1 x^2 \cdot 2x\,dx = \int_0^1 2x^3\,dx = 1/2$. Hence $\operatorname{Var}(X) = 1/2 - (2/3)^2 = 1/2 - 4/9 = 1/18 \approx 0.0556$, and $\sigma = 1/(3\sqrt{2}) \approx 0.236$.
 :::
 
-### 4.6.1 Notation bridge: descriptive vs probabilistic
+### Notation bridge: descriptive vs probabilistic
 
 In Topic 1 we computed *sample* statistics from observed data. We are now working with *population* parameters defined by a probability model. The correspondence is the standard Latin–Greek bridge:
 
@@ -302,7 +302,7 @@ In Topic 1 we computed *sample* statistics from observed data. We are now workin
 
 In all of inferential statistics, the central question is how well a sample statistic estimates the corresponding population parameter — a story for TC2 / Econometrics I, not for this book.
 
-## 4.7 Standardisation
+## Standardisation
 
 A useful operation, used everywhere in Topic 5, is to centre and scale a random variable so that it has mean zero and variance one.
 
@@ -324,7 +324,7 @@ $$
 
 A value of $Z$ measures how many standard deviations $X$ is away from its mean. Topic 5 introduces the **standard normal** distribution (a particular continuous $Z$ with mean $0$, variance $1$, and bell-shaped density) and the table of its CDF $\Phi(z)$ — but standardisation itself is a purely mechanical operation, available for *any* variable with finite variance.
 
-## 4.8 Chebyshev's inequality
+## Chebyshev's inequality
 
 How likely is it that $X$ lies far from its mean? Without knowing the shape of the distribution, we can still give a universal answer in terms of the standard deviation.
 
@@ -360,7 +360,7 @@ Chebyshev makes *no* assumption about the distribution. The price is that the bo
 
 <!-- TODO: Markov's inequality is not stated in the Topic 4 lecture notes (only Chebyshev). If the editor wants it included as a precursor to Chebyshev (Markov for non-negative variables: $P(X \geq a) \leq \mathbb{E}[X]/a$), insert here. -->
 
-## 4.9 R Lab — Discrete and continuous random variables
+## R Lab — Discrete and continuous random variables
 
 This lab walks through the running product-launch example (discrete) and the density $f_X(x) = 2x$ (continuous): plotting the PMF/PDF and CDF, and computing the mean and variance directly from the definitions.
 
@@ -371,7 +371,7 @@ set.seed(2026)
 # No special packages required: base R only.
 ```
 
-### 4.9.1 Discrete: product-launch profit
+### Discrete: product-launch profit
 
 ```{r ch04-discrete-pmf}
 outcomes <- c(-50, 20, 100)            # profit in thousands of euros
@@ -417,7 +417,7 @@ points(outcomes, cum_probs, pch = 19, col = "steelblue", cex = 1.2)
 
 We can read off $P(X \leq 20) = 0.70$: a 70% chance that profit does **not** exceed 20k EUR.
 
-### 4.9.2 Continuous: $f_X(x) = 2x$ on $[0, 1]$
+### Continuous: $f_X(x) = 2x$ on $[0, 1]$
 
 ```{r ch04-continuous-pdf}
 f <- function(x) ifelse(x >= 0 & x <= 1, 2 * x, 0)
@@ -453,7 +453,7 @@ abline(h = c(0, 1), col = "grey80", lty = 3)
 
 By the fundamental theorem of calculus, $F_X(0.7) - F_X(0.3) = 0.49 - 0.09 = 0.40$ matches the direct integral.
 
-### 4.9.3 Chebyshev in practice
+### Chebyshev in practice
 
 ```{r ch04-chebyshev}
 # Discrete product-launch variable: use Chebyshev to bound P(|X - mu| < k*sigma)

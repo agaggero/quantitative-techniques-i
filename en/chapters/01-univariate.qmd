@@ -21,7 +21,7 @@ By the end of this chapter the reader should be able to:
 
 The running example throughout this chapter is a simulated sample of 80 AirBnB nightly prices in Granada that mimics the right-skewed shape of a real short-term-rental market: most listings cluster around a moderate price, while a few luxury apartments stretch the upper tail. Quantitative Techniques I is a *descriptive* and *probabilistic* course — we summarise data, we do not yet test hypotheses about a wider population (that comes later in the curriculum). The univariate tools introduced here will be combined with bivariate methods in [Chapter 2](02-bivariate.qmd) and reinterpreted probabilistically from [Chapter 4](04-random-variables.qmd) onwards.
 
-## 1.1 What statistics is — and is not
+## What statistics is — and is not
 
 `\lettrine[lines=3]{S}{tatistics}`{=latex} is the science of collecting, organising, analysing, interpreting, and presenting data to support effective decision-making. It is conventionally divided into two branches:
 
@@ -38,11 +38,11 @@ The **population** is the complete collection of all individuals, objects, or me
 
 We work with samples rather than entire populations because full enumeration is typically too costly, too time-consuming, sometimes destructive (testing the lifespan of light bulbs requires burning them out), and sometimes simply infeasible (the population may be infinite or inaccessible). A well-chosen sample, drawn with an appropriate sampling method, can represent the population accurately.
 
-## 1.2 Statistical variables {#sec-variables}
+## Statistical variables {#sec-variables}
 
 A **statistical variable** is a characteristic that can take different values across the individuals in a population. Variables are classified along two crossing dimensions: the *kind of value* they can take, and the *level of measurement* they support.
 
-### 1.2.1 Types of variables
+### Types of variables
 
 - **Qualitative (categorical)** variables express qualities or attributes.
   - **Nominal**: categories with no natural order — eye colour, nationality, religion.
@@ -51,7 +51,7 @@ A **statistical variable** is a characteristic that can take different values ac
   - **Discrete**: only isolated values, typically integers — number of children, number of employees.
   - **Continuous**: any value within an interval — height, weight, income, temperature.
 
-### 1.2.2 Levels of measurement
+### Levels of measurement
 
 There are four levels of measurement, ordered from least to most informative:
 
@@ -78,9 +78,9 @@ There are four levels of measurement, ordered from least to most informative:
 The type of variable dictates which statistics are meaningful. The "average eye colour" is nonsensical, but the average income is not. Always check the level of measurement before applying an arithmetic summary.
 :::
 
-## 1.3 Frequency tables and graphs
+## Frequency tables and graphs
 
-### 1.3.1 Ungrouped data {#sec-freqtable}
+### Ungrouped data {#sec-freqtable}
 
 When a variable takes a manageable number of distinct values, the data are organised in a **frequency table**.
 
@@ -114,7 +114,7 @@ $$
 Sixty per cent of houses have three or fewer bedrooms (read from $F_3 = 0.60$). Both 3 and 4 bedrooms appear with the same maximal frequency, so the distribution is *bimodal*.
 :::
 
-### 1.3.2 Grouped data (intervals)
+### Grouped data (intervals)
 
 When a continuous variable takes too many distinct values to tabulate one-by-one, observations are grouped into **class intervals**, conventionally left-closed and right-open: $[L_i, L_{i+1})$.
 
@@ -141,7 +141,7 @@ For data grouped into intervals $[L_i, L_{i+1})$:
 The interval $[20, 40)$ has width $20$, double the others. Using the frequency $n_i$ as the height of a histogram bar over that interval would visually exaggerate its weight; using the density $h_i = n_i / a_i$ makes the *area* of each bar proportional to the frequency, which is the correct visual encoding.
 :::
 
-### 1.3.3 Graphical representations
+### Graphical representations
 
 - **Bar charts** are for qualitative and discrete quantitative variables. Each bar's height equals its frequency, and bars are separated by gaps.
 - **Histograms** are for continuous variables. Bars touch — no gaps. When intervals have unequal widths, the height of each bar must be the *density* $h_i = n_i / a_i$, not the frequency.
@@ -154,11 +154,11 @@ The interval $[20, 40)$ has width $20$, double the others. Using the frequency $
 Always check the scale of the vertical axis before interpreting a graph. A vertical axis that starts above zero can make tiny differences look like landslides — a classic technique in misleading political and corporate graphics.
 :::
 
-## 1.4 Measures of central tendency {#sec-central}
+## Measures of central tendency {#sec-central}
 
 Measures of central tendency identify a "typical" or "representative" value for the data.
 
-### 1.4.1 Moments
+### Moments
 
 Before specific summaries, it is helpful to introduce **moments**, which unify many statistics in a single framework. (Summation notation is reviewed in [Appendix A](appendix-a-prerequisites.qmd).)
 
@@ -177,7 +177,7 @@ $$
 
 Special cases are $a_1 = \bar{x}$, $m_1 = 0$, $m_2 = S^2$ (variance), $m_3$ enters skewness, and $m_4$ enters kurtosis.
 
-### 1.4.2 Arithmetic mean
+### Arithmetic mean
 
 ::: {.callout-note}
 ## Definition: arithmetic mean
@@ -222,7 +222,7 @@ $$
 No individual parking times are needed: the linear-transformation property delivers $\bar{y}$ from $\bar{x}$ alone.
 :::
 
-### 1.4.3 Geometric mean
+### Geometric mean
 
 ::: {.callout-note}
 ## Definition: geometric mean
@@ -248,11 +248,11 @@ $$
 Average annual return: $7.48\%$. The *arithmetic* mean of the returns, $(20 - 10 + 15)/3 = 8.33\%$, would **overestimate** the true average growth.
 :::
 
-### 1.4.4 Mode
+### Mode
 
 The **mode** $Mo$ is the value of the variable with the highest frequency. A distribution can be unimodal, bimodal, or multimodal. For grouped data with *equal* widths, the modal class is the one with the largest $n_i$ and $Mo$ is approximated by its midpoint; with *unequal* widths, compare *densities* $h_i$ instead. The mode can be computed for any level of measurement (including nominal data), is insensitive to outliers, but may fail to be unique or even to exist.
 
-### 1.4.5 Median
+### Median
 
 ::: {.callout-note}
 ## Definition: median
@@ -293,7 +293,7 @@ $$
 The median salary is approximately €2,667.
 :::
 
-### 1.4.6 Percentiles and quartiles {#sec-quartiles}
+### Percentiles and quartiles {#sec-quartiles}
 
 ::: {.callout-note}
 ## Definition: percentile
@@ -324,11 +324,11 @@ $$
 The interquartile range is $IQR = Q_3 - Q_1 = 20$ €.
 :::
 
-## 1.5 Measures of dispersion {#sec-dispersion}
+## Measures of dispersion {#sec-dispersion}
 
 Two datasets can share the same mean yet differ radically in spread. Consider two insurance companies, each with two clients: Company A has ages $40, 40$ and Company B has $20, 60$. Both have mean $40$, but the mean is "representative" only in the first case. Dispersion measures quantify this idea.
 
-### 1.5.1 Range and interquartile range
+### Range and interquartile range
 
 The **range** is
 $$
@@ -340,7 +340,7 @@ IQR = Q_3 - Q_1 = P_{75} - P_{25}
 $$
 covers the central $50\%$ of the data and is robust.
 
-### 1.5.2 Variance and standard deviation
+### Variance and standard deviation
 
 ::: {.callout-note}
 ## Definition: variance and standard deviation
@@ -377,7 +377,7 @@ S^2 = 36.6 - 36 = 0.6, \qquad S = \sqrt{0.6} \approx 0.775.
 $$
 :::
 
-### 1.5.3 Coefficient of variation
+### Coefficient of variation
 
 ::: {.callout-note}
 ## Definition: Pearson's coefficient of variation
@@ -395,13 +395,13 @@ The CV is **dimensionless**, allowing comparison of dispersion across variables 
 The salary distribution shows considerably more *relative* dispersion than hours worked, even though the salary variance ($100$) is much larger than the hours variance ($0.6$) — the comparison is meaningful only through the CV because the variables are on different scales.
 :::
 
-### 1.5.4 Box-plot {#sec-boxplot}
+### Box-plot {#sec-boxplot}
 
 The **box-plot** (box-and-whisker plot) is a visual summary of five statistics: the minimum (excluding outliers), $Q_1$, the median, $Q_3$, and the maximum (excluding outliers). Points beyond $Q_1 - 1.5\,IQR$ or $Q_3 + 1.5\,IQR$ are flagged as **outliers**. Box-plots are especially useful for **comparing distributions** side by side, e.g. salary distributions across departments.
 
-## 1.6 Measures of shape
+## Measures of shape
 
-### 1.6.1 Skewness
+### Skewness
 
 Skewness quantifies the **asymmetry** of a distribution.
 
@@ -429,7 +429,7 @@ Hence $g_1 = 0$: the distribution is perfectly symmetric.
 
 There is also a quick-and-dirty **Pearson** skewness coefficient $A_p = 3(\bar{x} - Me)/S$, used informally when only $\bar{x}$, $Me$, and $S$ are available.
 
-### 1.6.2 Kurtosis
+### Kurtosis
 
 Kurtosis quantifies the "peakedness" and **tail heaviness** of a distribution relative to a normal benchmark.
 
@@ -449,7 +449,7 @@ The subtraction of $3$ makes the normal distribution the reference point. $g_2 <
 Stock returns are typically leptokurtic. Extreme events — crashes and booms — happen more often than a normal model predicts. This is why simple Gaussian models underestimate financial risk, and why kurtosis matters in market-risk management.
 :::
 
-## 1.7 Measures of concentration {#sec-concentration}
+## Measures of concentration {#sec-concentration}
 
 **Concentration** measures the degree of *inequality* in how a variable's total is distributed across individuals. Two extreme cases bookend the spectrum:
 
@@ -458,7 +458,7 @@ Stock returns are typically leptokurtic. Extreme events — crashes and booms �
 
 Applications are pervasive in economics: income and wealth inequality, market concentration, land ownership, tax-burden distribution.
 
-### 1.7.1 The Lorenz curve
+### The Lorenz curve
 
 ::: {.callout-note}
 ## Definition: Lorenz curve
@@ -471,7 +471,7 @@ The Lorenz curve graphs concentration. Sort the data from smallest to largest, t
 
 The curve always passes through $(0, 0)$ and $(1, 1)$. The $45^\circ$ diagonal $q = p$ is the line of perfect equality. The further the Lorenz curve bows below the diagonal, the greater the concentration. The shaded area between the curve and the diagonal drives the Gini index.
 
-### 1.7.2 Gini index
+### Gini index
 
 ::: {.callout-note}
 ## Definition: Gini index
@@ -500,11 +500,11 @@ G &= 1 - \big[(0.10)(0.02) + (0.20)(0.16) + (0.30)(0.58) + (0.40)(1.44)\big] \\
 A Gini of about $0.22$ indicates relatively low salary inequality in this small sample.
 :::
 
-### 1.7.3 The mediala (briefly)
+### The mediala (briefly)
 
 The **mediala** is the value that splits the distribution so that the sum of all values *below* it equals the sum of all values *above* it. When concentration is weak, the mediala is close to the median. When concentration is strong (few individuals account for most of the total), the mediala lies well above the median.
 
-## 1.8 R Lab — AirBnB nightly prices in Granada
+## R Lab — AirBnB nightly prices in Granada
 
 The lab uses a simulated sample of 80 nightly prices designed to look like a typical short-term-rental market: a positively skewed bulk plus a few luxury listings in the upper tail. The chapter-wide seed is `set.seed(2026)`, but to remain consistent with the LearnR tutorial that uses the same dataset we keep the lab seed at $42$.
 
@@ -514,7 +514,7 @@ The lab uses a simulated sample of 80 nightly prices designed to look like a typ
 # Base R is enough for everything in this lab; we add nothing exotic.
 ```
 
-### 1.8.1 Generating the data
+### Generating the data
 
 ```{r ch01-data}
 set.seed(42)
@@ -528,7 +528,7 @@ summary(prices)
 
 The `summary()` output already hints at right skewness: the mean exceeds the median, and the maximum sits well beyond $Q_3$.
 
-### 1.8.2 Frequency table
+### Frequency table
 
 We use `cut()` to bin prices into 40-euro-wide intervals and then build $(n_i, f_i, N_i, F_i)$.
 
@@ -553,7 +553,7 @@ knitr::kable(freq_table,
 
 The first two or three classes (20–100 €) hold most apartments. The right tail is sparse — the visual signature of positive skewness.
 
-### 1.8.3 Central tendency
+### Central tendency
 
 ```{r ch01-central}
 stat_mode <- function(x) {
@@ -570,7 +570,7 @@ c(mean   = mean(prices),
 
 Mean above median is the textbook signature of right skewness. The geometric mean lies below the arithmetic mean, as the AM–GM inequality guarantees for non-constant positive data.
 
-### 1.8.4 Effect of an outlier
+### Effect of an outlier
 
 ```{r ch01-outlier}
 prices_out <- c(prices, 5000)  # a single luxury penthouse
@@ -583,7 +583,7 @@ c(mean_without   = mean(prices),
 
 A single €5,000 listing moves the mean substantially but barely nudges the median. This is the canonical illustration of why the median is the robust default for skewed economic variables.
 
-### 1.8.5 Dispersion and the coefficient of variation
+### Dispersion and the coefficient of variation
 
 R's `var()` and `sd()` divide by $n-1$. To recover the divisor-$n$ statistics defined in the chapter we rescale.
 
@@ -602,7 +602,7 @@ c(variance_n = round(S2, 2),
 
 A CV in the $50$–$60\%$ range is substantial: the Granada AirBnB market is markedly heterogeneous.
 
-### 1.8.6 Comparing two markets with the CV
+### Comparing two markets with the CV
 
 ```{r ch01-cv-compare}
 set.seed(99)
@@ -616,7 +616,7 @@ c(city_centre_CV = round(cv(city_centre), 1),
 
 Same mean, very different CV: the countryside market is far less homogeneous.
 
-### 1.8.7 Histogram with mean and median
+### Histogram with mean and median
 
 ```{r ch01-hist}
 hist(prices, breaks = 20, col = "steelblue", border = "white",
@@ -630,7 +630,7 @@ legend("topright", legend = c("Mean", "Median"),
 
 The red mean line sits to the right of the green median line — the classic visual signature of positive skewness.
 
-### 1.8.8 Skewness and excess kurtosis
+### Skewness and excess kurtosis
 
 ```{r ch01-skew-kurt}
 m3 <- mean((prices - mean(prices))^3)
@@ -644,7 +644,7 @@ c(skewness_g1 = round(g1, 3),
 
 Positive $g_1$ confirms the right tail; positive $g_2$ confirms heavier-than-normal tails — extreme nightly prices are more likely here than a bell curve would predict.
 
-### 1.8.9 Lorenz curve and Gini index
+### Lorenz curve and Gini index
 
 ```{r ch01-lorenz}
 sorted    <- sort(prices)
