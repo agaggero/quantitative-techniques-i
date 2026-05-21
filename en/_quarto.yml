@@ -61,6 +61,75 @@ format:
         \usepackage{amsmath,amssymb,amsthm,mathtools}
         \usepackage{bm}
 
+        % --- Thesis-style title page ---
+        \makeatletter
+        \renewcommand{\maketitle}{%
+          \begin{titlepage}
+            \centering
+            \vspace*{3.5cm}
+
+            {\Huge\scshape \@title\par}
+            \vspace{1.2cm}
+
+            \ifx\@subtitle\@empty\else
+              {\Large\itshape \@subtitle\par}
+            \fi
+            \vspace{3.5cm}
+
+            {\large\textbf{\@author}\par}
+            \vspace{0.8cm}
+
+            {\normalsize\textsc{Universidad de Granada}\par}
+            \vspace{0.2cm}
+            {\normalsize\itshape Faculty of Economics and Business Studies\par}
+            \vspace{1.5cm}
+
+            {\large\@date\par}
+
+            \vfill
+
+            {\footnotesize Released under Creative Commons Attribution 4.0 International (CC BY 4.0)\par}
+            \vspace{0.5cm}
+          \end{titlepage}
+          \cleardoublepage
+        }
+
+        % --- Thesis-style chapter heads ---
+        \def\thickhrulefill{\leavevmode \leaders \hrule height 1ex \hfill \kern \z@}
+        \def\@makechapterhead#1{%
+          \vspace*{10\p@}%
+          {\parindent \z@ \centering \reset@font
+            \thickhrulefill\quad
+            \scshape \@chapapp{} \thechapter
+            \quad \thickhrulefill
+            \par\nobreak
+            \vspace*{10\p@}%
+            \hrule
+            \vspace*{10\p@}%
+            \Huge \bfseries #1\par\nobreak
+            \par
+            \vspace*{10\p@}%
+            \hrule
+            \vskip 60\p@
+          }
+        }
+        \def\@makeschapterhead#1{%
+          \vspace*{10\p@}%
+          {\parindent \z@ \centering \reset@font
+            \thickhrulefill
+            \par\nobreak
+            \vspace*{10\p@}%
+            \hrule
+            \vspace*{10\p@}%
+            \Huge \bfseries #1\par\nobreak
+            \par
+            \vspace*{10\p@}%
+            \hrule
+            \vskip 50\p@
+          }
+        }
+        \makeatother
+
 bibliography: ../references.bib
 
 license: "CC BY 4.0"

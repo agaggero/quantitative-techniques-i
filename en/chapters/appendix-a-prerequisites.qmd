@@ -2,7 +2,6 @@
 title: "Mathematical Prerequisites"
 ---
 
-> *Status: ported 2026-05-19. Reviewed by editor: pending.*
 
 This appendix is a quick-reference compendium of the mathematical machinery the book takes for granted. It is deliberately terse: each subsection states the notation and the handful of identities used elsewhere in the text, with no extended derivations. Skim it once at the start of the course and return to individual subsections as they are invoked by Chapters 1--7.
 

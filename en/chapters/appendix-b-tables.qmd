@@ -2,7 +2,6 @@
 title: "Statistical Reference Tables"
 ---
 
-> *Status: ported 2026-05-19. Reviewed by editor: pending.*
 
 This appendix gathers the small set of reference tables most useful in a descriptive and probabilistic course: the standard-normal CDF, binomial and Poisson probability mass values for the parameter combinations that recur in worked examples and exercises, and a short list of standard-normal critical values. Because the entries below are produced inside R by the distribution functions `pnorm()`, `dbinom()`, and `dpois()`, they are exact to machine precision rather than rounded to fewer decimals as in printed appendices. A reader who wants a value not listed here can simply re-run the corresponding chunk with extra rows or columns. Fuller critical-value tables for the $t$, $F$, and $\chi^{2}$ distributions belong to the inferential setting of TC2 / Econometrics I and are reproduced in that book's reference appendix.
 

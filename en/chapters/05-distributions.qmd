@@ -2,7 +2,6 @@
 title: "Discrete Probability Distributions"
 ---
 
-> *Status: ported 2026-05-19. Reviewed by editor: pending.*
 
 ## Learning outcomes {.unnumbered}
 

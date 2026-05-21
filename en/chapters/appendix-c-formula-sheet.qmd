@@ -2,7 +2,6 @@
 title: "Formula Sheet and Exam Preparation"
 ---
 
-> *Status: ported 2026-05-19. Reviewed by editor: pending.*
 
 ```{r appC-setup}
 #| include: false
